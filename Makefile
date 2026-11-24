@@ -34,3 +34,24 @@ status: venv
 
 retry-failed: venv
 	$(PY) tools/bulk.py retry-failed
+
+# tylertoo from the pinned commit in config.yaml, in its own root so other
+# installs on the machine are untouched.
+TYLERTOO_COMMIT := $(shell python3 -I -c "import yaml;print(yaml.safe_load(open('config.yaml'))['toolchain']['tylertoo']['commit'])")
+TYLERTOO_ROOT := $(HOME)/copernicus-dem-work/tylertoo-$(shell echo $(TYLERTOO_COMMIT) | cut -c1-10)
+.PHONY: tylertoo acquisitions overview stac
+tylertoo: $(TYLERTOO_ROOT)/bin/tylertoo
+$(TYLERTOO_ROOT)/bin/tylertoo:
+	rm -rf /scratch/copdem/build/tylertoo
+	git clone -q https://github.com/geoparquet-io/tylertoo /scratch/copdem/build/tylertoo
+	git -C /scratch/copdem/build/tylertoo checkout -q $(TYLERTOO_COMMIT)
+	CARGO_TARGET_DIR=/scratch/copdem/build/tylertoo-target cargo install --locked --path /scratch/copdem/build/tylertoo/crates/cli --root $(TYLERTOO_ROOT)
+
+acquisitions: tylertoo
+	python3 -I tools/acquisitions.py $(ARGS)
+
+overview:
+	python3 -I tools/overview.py $(ARGS)
+
+stac:
+	python3 -I tools/stac.py $(ARGS)

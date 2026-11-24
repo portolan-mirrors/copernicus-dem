@@ -2,11 +2,11 @@
   "type": "Catalog",
   "stac_version": "1.1.0",
   "stac_extensions": [
-    "https://schemas.portolan-sdi.org/portolan/v0.2.0/schema.json"
+    "https://schemas.portolan-sdi.org/portolan/v0.3.0/schema.json"
   ],
-  "id": "example-catalog",
-  "title": "Example Catalog",
-  "description": "TODO(setup): one or two sentences saying what this catalog holds, who produced the data, and who it is for. A person and an agent both read this first.",
+  "id": "copernicus-dem",
+  "title": "Copernicus DEM GLO-30, release 2024_1",
+  "description": "A Portolan mirror of the Copernicus DEM GLO-30, release 2024_1: the global 30 m digital surface model from the TanDEM-X mission, produced by DLR and Airbus Defence and Space and provided under Copernicus by the European Union and ESA. It holds all 26,475 one-degree tiles, each with its elevation model and four quality layers (height error, editing, filling and water body masks), as cloud-optimized GeoTIFFs with embedded statistics, re-encoded losslessly so pixel values match the source exactly. Read [AGENTS.md](AGENTS.md) before you query.",
   "links": [
     {
       "rel": "root",
@@ -26,14 +26,40 @@
       "title": "Catalog agent guide"
     },
     {
+      "rel": "child",
+      "href": "./glo-30-2024-1/collection.json",
+      "type": "application/json",
+      "title": "Copernicus DEM GLO-30, release 2024_1"
+    },
+    {
+      "rel": "self",
+      "href": "https://data.source.coop/portolan-mirrors/copernicus-dem/catalog.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "via",
+      "href": "https://dataspace.copernicus.eu/explore-data/data-collections/copernicus-contributing-missions/collections-description/COP-DEM",
+      "type": "text/html",
+      "title": "Copernicus DEM on the Copernicus Data Space Ecosystem"
+    },
+    {
+      "rel": "license",
+      "href": "./_assets/copernicus-dem-licences.pdf",
+      "type": "application/pdf",
+      "title": "Licence for the use of the Copernicus WorldDEM-30 (pages 22-24)"
+    },
+    {
       "rel": "vcs",
-      "href": "https://github.com/TODO(setup)",
-      "title": "Source repository"
+      "href": "https://github.com/portolan-mirrors/copernicus-dem",
+      "type": "text/html",
+      "title": "Build scripts and metadata"
     },
     {
       "rel": "issues",
-      "href": "https://github.com/TODO(setup)/issues",
-      "title": "Issue tracker"
+      "href": "https://github.com/portolan-mirrors/copernicus-dem/issues",
+      "type": "text/html",
+      "title": "Report a problem"
     }
-  ]
+  ],
+  "updated": "2026-11-24T15:14:48Z"
 }

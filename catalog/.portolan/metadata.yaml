@@ -1,0 +1,53 @@
+# .portolan/metadata.yaml: catalog root. Collections inherit these fields
+# unless their own metadata.yaml overrides them.
+
+title: "Copernicus DEM GLO-30, release 2024_1"
+description: >-
+  A Portolan mirror of the Copernicus DEM GLO-30, release 2024_1: the global
+  30 m digital surface model from the TanDEM-X mission, produced by DLR and
+  Airbus Defence and Space and provided under Copernicus by the European Union
+  and ESA. It holds all 26,475 one-degree tiles, each with its elevation model
+  and four quality layers (height error, editing, filling and water body
+  masks), as cloud-optimized GeoTIFFs with embedded statistics, re-encoded
+  losslessly so pixel values match the source exactly. Read
+  [AGENTS.md](AGENTS.md) before you query.
+
+contact:
+  name: "Portolan Mirrors"
+  email: "nissim@radiant.earth"
+
+license: "other"
+license_url: "./_assets/copernicus-dem-licences.pdf"
+
+attribution: >-
+  © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided
+  under COPERNICUS by the European Union and ESA; all rights reserved.
+
+providers:
+  - name: "DLR e.V. (German Aerospace Center)"
+    roles: ["producer"]
+    url: "https://www.dlr.de/"
+    description: "Operates the TanDEM-X mission whose data the DEM is derived from."
+  - name: "Airbus Defence and Space GmbH"
+    roles: ["producer"]
+    url: "https://www.airbus.com/en/products-services/space/earth-observation"
+    description: "Produced the WorldDEM-based Copernicus DEM (the licence's 'Provider')."
+  - name: "European Space Agency (ESA) and European Union, Copernicus programme"
+    roles: ["licensor"]
+    url: "https://dataspace.copernicus.eu/"
+    description: "Provide the Copernicus DEM under COPERNICUS and license it (COP-DEM-GLO-30-F, Full, Free & Open)."
+  - name: "Portolan Mirrors"
+    roles: ["processor", "host"]
+    url: "https://source.coop/portolan-mirrors/copernicus-dem"
+    description: "Maintains this mirror: the lossless re-encoding, STAC metadata, item index and documentation."
+
+citation: >-
+  European Space Agency (2022). Copernicus DEM [Data set].
+  https://doi.org/10.5270/ESA-c5d3d65
+keywords:
+  - elevation
+  - digital surface model
+  - DEM
+  - TanDEM-X
+  - WorldDEM
+  - Copernicus

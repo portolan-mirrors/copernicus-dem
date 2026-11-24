@@ -40,3 +40,9 @@ toolchain:
   numpy: 1.26.4
   boto3: 1.44.10
   obstore: 0.12.1
+  # PMTiles for source-acquisitions. Built from this commit, not a crates.io
+  # release (0.8.0 on crates.io predates much of main): make tylertoo.
+  tylertoo:
+    repo: https://github.com/geoparquet-io/tylertoo
+    commit: 31961fd2d0e6edc63d44c7f4c0cfeb48b5c76b78
+    bin: ~/copernicus-dem-work/tylertoo-31961fd2d0/bin/tylertoo
