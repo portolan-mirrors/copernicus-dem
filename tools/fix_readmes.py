@@ -16,6 +16,7 @@ from collections import defaultdict
 from pathlib import Path
 
 CAT = Path(__file__).resolve().parent.parent / "catalog"
+PUBLIC = "https://data.source.coop/portolan-mirrors/copernicus-dem"
 TILE_ROW = re.compile(r"^\| [NS]\d\d_[EW]\d{3}/[NS]\d\d_[EW]\d{3}(_[A-Z]{3}\.tif|\.xml) \| [^|]* \| [^|]* \|\n", re.M)
 
 
@@ -49,6 +50,10 @@ for readme in CAT.rglob("README.md"):
         fixed = re.sub(r"\]\(catalog/([^)/]+)/\)", r"](\1/README.md)", text)
     else:
         fixed = text.replace("](./_assets/", "](../_assets/")
+        # The quick start reads a data file by relative path, but data files
+        # live only in the bucket; point it at the public URL.
+        fixed = re.sub(r'read_parquet\("\./([^"/]+\.parquet)"\)',
+                       lambda m: f'read_parquet("{PUBLIC}/{rel}/{m.group(1)}")', fixed)
         if (readme.parent / "collection.json").exists() and any(readme.parent.glob("*/*.json")):
             fixed = collapse(fixed, readme.parent)
     if fixed != text:

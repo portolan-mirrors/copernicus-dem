@@ -39,7 +39,7 @@ The Copernicus DEM GLO-30 digital surface model, release 2024_1, as 26,475 items
 ```python
 import geopandas as gpd
 
-gdf = gpd.read_parquet("./items.parquet")
+gdf = gpd.read_parquet("https://data.source.coop/portolan-mirrors/copernicus-dem/glo-30-2024-1/items.parquet")
 print(gdf.head())
 ```
 

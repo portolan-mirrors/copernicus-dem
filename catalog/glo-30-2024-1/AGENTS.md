@@ -52,6 +52,7 @@ The same on Lake Victoria (33.0, 0.1), tile `N00_E033`, shows an edited
 pixel:
 
 ```bash
+B=https://data.source.coop/portolan-mirrors/copernicus-dem/glo-30-2024-1
 for a in DEM HEM EDM FLM WBM; do
   gdallocationinfo -valonly -wgs84 /vsicurl/$B/N00_E033/N00_E033_$a.tif 33.0 0.1
 done

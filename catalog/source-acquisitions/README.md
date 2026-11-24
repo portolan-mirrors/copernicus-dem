@@ -41,7 +41,7 @@ Footprints of the TanDEM-X acquisitions behind each Copernicus DEM GLO-30 tile, 
 ```python
 import geopandas as gpd
 
-gdf = gpd.read_parquet("./source-acquisitions.parquet")
+gdf = gpd.read_parquet("https://data.source.coop/portolan-mirrors/copernicus-dem/source-acquisitions/source-acquisitions.parquet")
 print(gdf.head())
 ```
 

@@ -48,6 +48,7 @@ The acquisitions under a point, using the bbox column to prune before the
 exact test:
 
 ```sql
+INSTALL spatial;
 LOAD spatial;
 SELECT name, acquisition_set, acquisition_time
 FROM read_parquet('https://data.source.coop/portolan-mirrors/copernicus-dem/source-acquisitions/source-acquisitions.parquet')

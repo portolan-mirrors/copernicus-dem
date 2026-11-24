@@ -390,7 +390,6 @@ def acquisitions_collection(now: str) -> bool:
     acq = CAT / ACQ
     meta = {**yaml.safe_load((CAT / ".portolan" / "metadata.yaml").read_text()),
             **yaml.safe_load((acq / ".portolan" / "metadata.yaml").read_text())}
-    old = json.loads((acq / "collection.json").read_text()) if (acq / "collection.json").exists() else {}
     style = acq / "styles" / "default.json"
     assets = {
         "data": {"href": f"./{pq.name}", "type": "application/vnd.apache.parquet", "roles": ["data"],
