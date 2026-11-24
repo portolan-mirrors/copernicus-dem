@@ -1,0 +1,21 @@
+{
+  "release": "COP-DEM_GLO-30-DGED/2024_1",
+  "tiles": 26475,
+  "aws": 26248,
+  "cdse": 227,
+  "cdse_bytes_raw": 18177048253,
+  "aws_bytes_cog": 1303842816388,
+  "by_release_changed": {
+    "2020_2": 2649,
+    "2019_2": 23599,
+    "2022_1": 188,
+    "2023_1": 38,
+    "2024_1": 1
+  },
+  "cdse_reasons": {
+    "absent_from_aws": 25,
+    "incomplete_on_aws": 0,
+    "changed_after_aws": 202
+  },
+  "aws_tiles_not_in_release": []
+}
