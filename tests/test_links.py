@@ -34,6 +34,9 @@ CI_LIGHT = os.environ.get("CI_LIGHT") == "1"
 DATA_SUFFIXES = (
     ".parquet", ".pmtiles", ".tif", ".tiff", ".copc.laz", ".laz", ".gpkg",
     ".zarr", ".geojsonl", ".shp", ".zip",
+    # copernicus-dem: each item's producer XML (asset "metadata") is copied
+    # to the bucket by tools/bulk.py beside the COGs and never enters git.
+    ".xml",
 )
 
 
@@ -76,6 +79,11 @@ for path in documents:
     for link in doc.get("links", []):
         href = link.get("href", "")
         if not href or is_remote(href):
+            continue
+        # A web-map-links rel:pmtiles link targets the same data file as the
+        # PMTiles asset, so it takes the same CI_LIGHT exemption, and only it.
+        if link.get("rel") == "pmtiles" and is_unpublished_data(href):
+            skipped += 1
             continue
         checked += 1
         if not (path.parent / href).resolve().exists():

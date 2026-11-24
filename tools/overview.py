@@ -42,7 +42,7 @@ CONFIG = yaml.safe_load((ROOT / "config.yaml").read_text())
 CID = CONFIG["collection"]
 PUBLIC = CONFIG["upload"]["public_base"]
 WORK = Path(CONFIG["scratch"]).parent / "overview"
-OUT = WORK / f"{CID}_overview.tif"
+OUT = Path(CONFIG["staging_dir"]) / CID / f"{CID}_overview.tif"
 
 HALF = 20037508.342789244          # half the EPSG:3857 world width, metres
 ZOOM = 7
@@ -158,6 +158,7 @@ def main() -> None:
     ap.add_argument("--workers", type=int, default=64)
     args = ap.parse_args()
     (WORK / "tiles").mkdir(parents=True, exist_ok=True)
+    OUT.parent.mkdir(parents=True, exist_ok=True)
     with gzip.open(ROOT / "manifest" / "tiles.csv.gz", "rt") as f:
         ids = [r["item_id"] for r in csv.DictReader(f)]
     rdir = Path(CONFIG["results_dir"])
@@ -181,7 +182,7 @@ def main() -> None:
     ds = gdal.Open(str(OUT))
     info = {"path": str(OUT), "size": OUT.stat().st_size, "shape": [ds.RasterYSize, ds.RasterXSize],
             "geotransform": list(ds.GetGeoTransform()), "tiles": len(warped)}
-    (WORK / "overview.json").write_text(json.dumps(info, indent=2))
+    (OUT.parent / "overview.json").write_text(json.dumps(info, indent=2))
     print(json.dumps(info))
 
 

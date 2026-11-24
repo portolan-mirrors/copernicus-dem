@@ -39,7 +39,7 @@ retry-failed: venv
 # installs on the machine are untouched.
 TYLERTOO_COMMIT := $(shell python3 -I -c "import yaml;print(yaml.safe_load(open('config.yaml'))['toolchain']['tylertoo']['commit'])")
 TYLERTOO_ROOT := $(HOME)/copernicus-dem-work/tylertoo-$(shell echo $(TYLERTOO_COMMIT) | cut -c1-10)
-.PHONY: tylertoo acquisitions overview stac
+.PHONY: tylertoo acquisitions overview stac items-parquet thumbs readme metadata gate audit cdse-check publish-dry publish
 tylertoo: $(TYLERTOO_ROOT)/bin/tylertoo
 $(TYLERTOO_ROOT)/bin/tylertoo:
 	rm -rf /scratch/copdem/build/tylertoo
@@ -55,3 +55,45 @@ overview:
 
 stac:
 	python3 -I tools/stac.py $(ARGS)
+
+# Every published item as one stac-geoparquet table (needs the items first).
+items-parquet:
+	cd catalog && portolan stac-geoparquet -c $(shell python3 -I -c "import yaml;print(yaml.safe_load(open('config.yaml'))['collection'])")
+
+# Thumbnails need a running chiitiler (the portolan-thumbnails skill's
+# start_server.sh); look at both images before publishing.
+thumbs:
+	python3 -I tools/thumbs.py
+
+readme:
+	cd catalog && portolan readme
+	python3 -I tools/fix_readmes.py
+
+# All metadata from the upload records, in order. stac runs twice: the second
+# pass registers items.parquet and the thumbnails with their checksums.
+metadata: acquisitions overview stac items-parquet thumbs
+	python3 -I tools/stac.py $(ARGS)
+	$(MAKE) readme
+
+# The pre-publish gates: repo tests, rashid, and the catalog grader.
+gate:
+	CI_LIGHT=1 python3 -I tests/run_all.py
+	rashid check catalog --no-data --summary
+	uv run -q ~/unosat/work/collect_facts_fast.py catalog --repo . --out /scratch/copdem/grade --no-rashid --max-nodes 80 --registry-submission --run-shell
+
+# Bucket against manifest and upload records, plus full hashes of a sample.
+audit: venv
+	$(PY) tools/audit.py --sample 20 $(ARGS)
+
+# Can the CDSE account download 2024_1 products yet (OData and S3)?
+cdse-check: venv
+	$(PY) tools/cdse_check.py
+
+# Collection-level data (staging) and then the catalog JSON and docs.
+# Dry run first; publish uploads.
+publish-dry: venv
+	$(PY) tools/upload_data.py
+	$(PY) tools/publish.py
+publish: venv
+	$(PY) tools/upload_data.py --confirm
+	$(PY) tools/publish.py --confirm

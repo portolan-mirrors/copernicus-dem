@@ -20,7 +20,9 @@ from __future__ import annotations
 import argparse
 import csv
 import gzip
+import hashlib
 import json
+import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -49,7 +51,13 @@ EXT = {
     "classification": "https://stac-extensions.github.io/classification/v2.0.0/schema.json",
     "processing": "https://stac-extensions.github.io/processing/v1.2.0/schema.json",
     "item_assets": "https://stac-extensions.github.io/item-assets/v1.0.0/schema.json",
+    "table": "https://stac-extensions.github.io/table/v1.2.0/schema.json",
+    "web_map_links": "https://stac-extensions.github.io/web-map-links/v1.3.0/schema.json",
 }
+STAGING = Path(CONFIG["staging_dir"])
+ACQ = "source-acquisitions"
+ATTRIBUTION_ADAPTED = ("produced using Copernicus WorldDEM-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space "
+                       "GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved")
 
 HANDBOOK = ("https://dataspace.copernicus.eu/sites/default/files/media/files/2026-10/"
             "geo1988-copernicusdem-spe-002_producthandbook_i6.1.pdf")
@@ -100,6 +108,25 @@ METADATA_ASSET = {
     "title": "Product metadata (ISO 19115 XML)", "roles": ["metadata"], "type": "application/xml",
     "description": "The DGED product's XML metadata, copied unchanged from the source tile folder.",
 }
+
+
+def file_fields(path: Path) -> dict:
+    """file:size and a sha256 multihash for a local file."""
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 22), b""):
+            h.update(chunk)
+    return {"file:size": path.stat().st_size, "file:checksum": "1220" + h.hexdigest()}
+
+
+def thumbnail_asset(coll_dir: Path, what: str) -> dict:
+    """The thumbnail asset, when tools/thumbs.sh has rendered one."""
+    p = coll_dir / "thumbnail.png"
+    if not p.exists():
+        return {}
+    return {"thumbnail": {"href": "./thumbnail.png", "type": "image/png", "roles": ["thumbnail"],
+                          "title": "Thumbnail", "description": f"{what}, rendered by tools/thumbs.sh.",
+                          **file_fields(p)}}
 
 
 def save(p: Path, d: dict) -> None:
@@ -249,7 +276,29 @@ def make_collection(items: list[dict], now: str) -> dict:
     starts = sorted(i["properties"]["start_datetime"] for i in items)
     ends = sorted(i["properties"]["end_datetime"] for i in items)
     old = json.loads((COLL / "collection.json").read_text()) if (COLL / "collection.json").exists() else {}
-    keep_assets = {k: v for k, v in old.get("assets", {}).items() if k in ("geoparquet-items", "overview", "thumbnail")}
+    keep_assets = {k: v for k, v in old.get("assets", {}).items() if k in ("geoparquet-items",)}
+    keep_assets.update(thumbnail_asset(COLL, "A window of the overview COG"))
+    if "geoparquet-items" in keep_assets:
+        keep_assets["geoparquet-items"]["description"] = (
+            "Every item of this collection as one stac-geoparquet file, one row per tile, for querying the "
+            "whole collection (for example with DuckDB) without fetching the item JSON files. Rebuilt with "
+            "portolan stac-geoparquet whenever the items change.")
+    ov = STAGING / CID / f"{CID}_overview.tif"
+    if ov.exists():
+        keep_assets["overview"] = {
+            "href": f"./{ov.name}", "type": COG, "roles": ["visual", "overview"],
+            "title": "Global hillshaded elevation overview (COG)",
+            "description": ("The whole collection in one 8-bit RGB + alpha COG in Web Mercator at about 1.2 km, for "
+                             "maps that should not open 26,475 items. Elevation tinted with a hypsometric ramp and "
+                             "multiplied by a hillshade. Alpha is 0 where no tile has data. Not elevation data: "
+                             "read the item COGs for heights. Web Mercator stops near 85 degrees, so most of "
+                             "Antarctica is not in it. " + ATTRIBUTION_ADAPTED + "."),
+            "proj:code": "EPSG:3857",
+            "start_datetime": starts[0], "end_datetime": ends[-1],
+            "processing:lineage": "tools/overview.py: DEM COGs warped to EPSG:3857 (average), Horn hillshade "
+                                  "(azimuth 315, altitude 45), hypsometric tint, 8-bit RGBA.",
+            **file_fields(ov),
+        }
     links = [
         {"rel": "root", "href": "../catalog.json", "type": "application/json"},
         {"rel": "parent", "href": "../catalog.json", "type": "application/json"},
@@ -273,7 +322,7 @@ def make_collection(items: list[dict], now: str) -> dict:
     return {
         "type": "Collection", "id": CID, "stac_version": "1.1.0",
         "stac_extensions": [EXT["file"], EXT["proj"], EXT["raster"], EXT["classification"],
-                            *([EXT["render"]] if "overview" in keep_assets else []),
+                            *([EXT["render"], EXT["processing"]] if "overview" in keep_assets else []),
                             EXT["item_assets"], PORTOLAN],
         "title": meta["title"],
         "description": " ".join(meta["description"].split()),
@@ -298,6 +347,98 @@ def make_collection(items: list[dict], now: str) -> dict:
         "links": links,
         "updated": now,
     }
+
+
+# Columns of source-acquisitions.parquet. Quoted text is from the KML balloon
+# tables or Product Handbook 6.1, section 1.2.5.6; the rest is what
+# tools/acquisitions.py does.
+ACQ_COLUMNS = [
+    {"name": "name", "type": "string",
+     "description": "The placemark name from SRC.kml, such as 1020979_02. The handbook says the file holds "
+                    "\"the acquisition ID, data scene number\"; it does not define how the name encodes them."},
+    {"name": "acquisition_set", "type": "string",
+     "description": "\"Acquisition Set\" from the KML balloon: First, Second, First crossing, Second crossing, "
+                    "Additional or Other acquisition. The handbook does not define these sets."},
+    {"name": "acquisition_time", "type": "timestamp",
+     "description": "\"Acquisition Date\" from the KML balloon, to the minute. The KML gives no time zone."},
+    {"name": "phase_unwrap", "type": "string",
+     "description": "\"Phase Unwrap\" from the KML balloon: multi-baseline or single-baseline."},
+    {"name": "height_of_ambiguity", "type": "number",
+     "description": "\"Height of Ambiguity\" from the KML balloon, as written. The KML gives no unit."},
+    {"name": "tiles", "type": "array",
+     "description": "Item ids (grid cells, such as N00_E006) of the glo-30-2024-1 tiles whose SRC.kml lists this footprint."},
+    {"name": "tile_count", "type": "integer", "description": "Length of tiles."},
+    {"name": "geometry", "type": "geometry",
+     "description": "The acquisition footprint polygon as given in the KML, EPSG:4326. Not clipped to any tile."},
+    {"name": "bbox", "type": "object", "description": "Bounding box covering column (xmin, ymin, xmax, ymax)."},
+]
+
+
+def acquisitions_collection(now: str) -> bool:
+    d = STAGING / ACQ
+    pq, pm = d / f"{ACQ}.parquet", d / f"{ACQ}.pmtiles"
+    if not (pq.exists() and pm.exists()):
+        return False
+    summ = json.loads((d / "summary.json").read_text())
+    out = subprocess.run(["duckdb", "-no-agent", "-json", "-c",
+                          f"select min(bbox.xmin) a, min(bbox.ymin) b, max(bbox.xmax) c, max(bbox.ymax) d, "
+                          f"count(*) n from '{pq}'"], check=True, capture_output=True, text=True).stdout
+    b = json.loads(out)[0]
+    if b["n"] != summ["rows"]:
+        sys.exit(f"{pq}: {b['n']} rows, summary says {summ['rows']}")
+    t0, t1 = (t.replace("T", " ") for t in summ["time_range"])
+    acq = CAT / ACQ
+    meta = {**yaml.safe_load((CAT / ".portolan" / "metadata.yaml").read_text()),
+            **yaml.safe_load((acq / ".portolan" / "metadata.yaml").read_text())}
+    old = json.loads((acq / "collection.json").read_text()) if (acq / "collection.json").exists() else {}
+    style = acq / "styles" / "default.json"
+    assets = {
+        "data": {"href": f"./{pq.name}", "type": "application/vnd.apache.parquet", "roles": ["data"],
+                 "title": "Acquisition footprints (GeoParquet)",
+                 "description": f"{summ['rows']:,} footprints from {summ['tiles']:,} tiles' SRC.kml files, "
+                                "GeoParquet 2.0 with a bbox covering column, Hilbert-sorted.",
+                 "table:row_count": summ["rows"], **file_fields(pq)},
+        "tiles": {"href": f"./{pm.name}", "type": "application/vnd.pmtiles", "roles": ["visual"],
+                  "title": "Acquisition footprints (PMTiles)",
+                  "description": f"Vector tiles of the GeoParquet, z0 to z10, layer {ACQ}, built with tylertoo "
+                                 f"{CONFIG['toolchain']['tylertoo']['commit'][:10]}.",
+                  **file_fields(pm)},
+        "style": {"href": "./styles/default.json", "type": "application/vnd.mapbox.style+json",
+                  "roles": ["style", "default"], "title": "Footprints by acquisition set",
+                  "description": "MapLibre style over the PMTiles, in the colours the producer's SRC.kml files use.",
+                  **file_fields(style)},
+    }
+    assets.update(thumbnail_asset(acq, "Footprints near Mount Kenya in the default style"))
+    coll = {
+        "type": "Collection", "id": ACQ, "stac_version": "1.1.0",
+        "stac_extensions": [EXT["file"], EXT["table"], EXT["web_map_links"], PORTOLAN],
+        "title": meta["title"], "description": " ".join(meta["description"].split()),
+        "keywords": meta.get("keywords", []), "license": "other", "providers": meta["providers"],
+        "extent": {"spatial": {"bbox": [[b["a"], b["b"], b["c"], b["d"]]]},
+                   "temporal": {"interval": [[f"{t0}:00Z".replace(" ", "T"), f"{t1}:00Z".replace(" ", "T")]]}},
+        "table:columns": ACQ_COLUMNS,
+        "table:primary_geometry": "geometry",
+        "assets": assets,
+        "links": [
+            {"rel": "root", "href": "../catalog.json", "type": "application/json"},
+            {"rel": "parent", "href": "../catalog.json", "type": "application/json"},
+            {"rel": "pmtiles", "href": f"./{pm.name}", "type": "application/vnd.pmtiles", "pmtiles:layers": [ACQ]},
+            {"rel": "related", "href": f"../{CID}/collection.json", "type": "application/json",
+             "title": "Copernicus DEM GLO-30, release 2024_1 (the tiles these acquisitions built)"},
+            {"rel": "license", "href": "../_assets/copernicus-dem-licences.pdf", "type": "application/pdf",
+             "title": "Licence for the use of the Copernicus WorldDEM-30 (COP-DEM-GLO-30-F, pages 22-24)"},
+            {"rel": "via", "href": COP_DEM_PAGE, "type": "text/html",
+             "title": "Copernicus DEM on the Copernicus Data Space Ecosystem"},
+            {"rel": "cite-as", "href": DOI, "type": "text/html", "title": "Copernicus DEM, doi:10.5270/ESA-c5d3d65"},
+            {"rel": "describedby", "href": HANDBOOK, "type": "application/pdf",
+             "title": "Copernicus DEM Product Handbook, issue 6.1 (section 1.2.5.6)"},
+            {"rel": "describedby", "href": "./README.md", "type": "text/markdown", "title": "Collection README"},
+            {"rel": "agents", "href": "./AGENTS.md", "type": "text/markdown", "title": "Collection agent guide"},
+        ],
+        "updated": now,
+    }
+    save(acq / "collection.json", coll)
+    return True
 
 
 def root_catalog(now: str) -> None:
@@ -344,8 +485,9 @@ def main() -> None:
         save(COLL / it["id"] / f"{it['id']}.json", it)
         items.append(it)
     save(COLL / "collection.json", make_collection(items, now))
+    acq = acquisitions_collection(now)
     root_catalog(now)
-    print(f"wrote {len(items)} items, collection {CID}, root catalog")
+    print(f"wrote {len(items)} items, collection {CID}, {'collection ' + ACQ + ', ' if acq else ''}root catalog")
 
 
 if __name__ == "__main__":

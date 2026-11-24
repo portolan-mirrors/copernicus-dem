@@ -16,10 +16,11 @@ one row per distinct (name, footprint), with the list of tiles that used it.
 Values are kept as the KML gives them: the date has minute precision and the
 KML states no time zone; Height of Ambiguity is the number as written.
 
-Output (in scratch, uploaded with tools/upload_data.py):
+Output (in staging_dir, uploaded with tools/upload_data.py):
     source-acquisitions/source-acquisitions.parquet   GeoParquet (gpio)
     source-acquisitions/source-acquisitions.pmtiles   PMTiles (tylertoo)
-and a summary JSON beside them for tools/stac.py.
+and summary.json beside them for tools/stac.py (not uploaded: .json is not
+in upload_data.py's suffix allow-list).
 """
 from __future__ import annotations
 
@@ -38,7 +39,8 @@ import yaml
 ROOT = Path(__file__).resolve().parent.parent
 CONFIG = yaml.safe_load((ROOT / "config.yaml").read_text())
 KML_DIR = Path(CONFIG["kml_dir"])
-OUT = Path(CONFIG["scratch"]).parent / "source-acquisitions"
+OUT = Path(CONFIG["scratch"]).parent / "source-acquisitions"   # intermediates
+FINAL = Path(CONFIG["staging_dir"]) / "source-acquisitions"    # uploaded by tools/upload_data.py
 NAME = "source-acquisitions"
 TYLERTOO = str(Path(CONFIG["toolchain"]["tylertoo"]["bin"]).expanduser())
 # Licence COP-DEM-GLO-30-F, Art. 6(b), the notice for adapted data.
@@ -98,9 +100,10 @@ def main() -> None:
             tiles[key].append(tile)
 
     OUT.mkdir(parents=True, exist_ok=True)
-    for f in OUT.iterdir():  # every output is rebuilt from the KMLs
-        if f.is_file():
-            f.unlink()
+    for d in (OUT, FINAL):  # every output is rebuilt from the KMLs
+        for f in d.glob("*") if d.exists() else []:
+            if f.is_file():
+                f.unlink()
     nd = OUT / "rows.ndjson"
     with open(nd, "w") as f:
         for key, r in rows.items():
@@ -115,7 +118,8 @@ def main() -> None:
                   phase_unwrap:'VARCHAR', height_of_ambiguity:'DOUBLE', tiles:'VARCHAR[]',
                   tile_count:'INTEGER', wkt:'VARCHAR'}}))
         TO '{raw}' (FORMAT parquet)"""], check=True)
-    pq = OUT / f"{NAME}.parquet"
+    FINAL.mkdir(parents=True, exist_ok=True)
+    pq = FINAL / f"{NAME}.parquet"
     log = open(OUT / "build.log", "w")
     # GeoParquet 2.0 because the spec asks for it when tools can write it
     # (PORTO-FMT-080), plus a bbox covering column (PORTO-FMT-008).
@@ -125,7 +129,7 @@ def main() -> None:
     subprocess.run(["gpio", "add", "bbox", str(nobbox), str(pq), "--geoparquet-version", "2.0"],
                    check=True, stdout=log, stderr=log)
     subprocess.run(["gpio", "check", "all", str(pq)], check=True, stdout=log, stderr=log)
-    pm = OUT / f"{NAME}.pmtiles"
+    pm = FINAL / f"{NAME}.pmtiles"
     # tylertoo, built from the commit pinned in config.yaml (make tylertoo).
     # --size-valve drop: footprints overlap, and the default merge valve would
     # paint one footprint's attributes over its merged neighbours. Dropping
@@ -143,7 +147,7 @@ def main() -> None:
                "time_range": [min(r["acquisition_time"] for r in rows.values()),
                               max(r["acquisition_time"] for r in rows.values())],
                "parquet_bytes": pq.stat().st_size, "pmtiles_bytes": pm.stat().st_size}
-    (OUT / "summary.json").write_text(json.dumps(summary, indent=2))
+    (FINAL / "summary.json").write_text(json.dumps(summary, indent=2))
     print(json.dumps(summary, indent=2))
 
 

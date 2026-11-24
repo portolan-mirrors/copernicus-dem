@@ -34,7 +34,14 @@ something.
 
 ## Accepted deviations
 
-None.
+None at error severity, so `ACCEPTED` in `tests/test_conformance.py` stays
+empty. Two known gaps that need no allow-list entry are recorded here so
+nobody has to rediscover them.
+
+| Rule | Where | Why accepted | Tracking |
+|---|---|---|---|
+| PTL-CAT-001 (warning) | `glo-30-2024-1`, 26,475 items in one flat list | Same layout as the other portolan-mirrors raster mirrors (GSWE: 504 flat items per collection). `items.parquet` (stac-geoparquet, `collection-mirror` role) is the bulk route, and a grid of 1° subcatalogs would add 300+ catalog files a client walks for no query it cannot already do on the table. | none; revisit if the spec turns the warning into an error |
+| PORTO-FMT-026 to 029 (not flagged by rashid 0.4.0) | `hem` asset of tiles whose Height Error Mask is entirely -32767 (edited), e.g. `N01_E119` | Every pixel is nodata, so minimum, maximum, mean and standard deviation do not exist. GDAL refuses to compute them. The COG carries `STATISTICS_VALID_PERCENT=0` and the STAC band `statistics: {"valid_percent": 0}`, which states the fact without inventing numbers. tools/encode.py marks such bands `all_nodata`. | to file against portolan-spec: what an all-nodata band should carry |
 
 <!--
 When you accept one, add a row and a section explaining it, like this:

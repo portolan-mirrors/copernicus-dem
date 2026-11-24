@@ -1,92 +1,52 @@
-# Portolan Catalog Template
+# Copernicus DEM GLO-30 2024_1 mirror
 
-A starting point for a [Portolan](https://www.portolan-sdi.org/) catalog whose
-metadata lives in git. Click **Use this template**, work through
-[SETUP.md](SETUP.md), and you have a repository whose CI validates every change
-before it publishes.
+Build scripts and metadata for the Portolan mirror of the Copernicus DEM
+GLO-30, release 2024_1, with its quality masks and source acquisitions,
+published at
+<https://data.source.coop/portolan-mirrors/copernicus-dem/catalog.json>
+([portolan-data#81](https://github.com/portolan-sdi/portolan-data/issues/81)).
 
-**`catalog/` is the published catalog.** Everything in it is published.
-Everything outside it never is. That boundary is the whole publish contract,
-and `tools/publish.py` has no flag or config key that widens it.
+`catalog/` is the published catalog: STAC JSON, README and AGENTS guides,
+thumbnails, the licence. Everything in it publishes, nothing outside it does.
+The data (about 1.3 TB of COGs, plus the overview and the footprint files)
+lives only in the bucket.
 
-## Three kinds of file
+## Where the pixels come from
 
-| Kind | Where | Example |
+The 2024_1 release has 26,475 tiles. Each tile's `eopIdentifier` ends with the
+release in which it last changed. The 26,248 tiles last changed in 2019_2 or
+2020_2 are identical in the 2021 copy on AWS Open Data
+(`s3://copernicus-dem-30m`), so they are read from there. The other 227 last
+changed in 2022_1 (188), 2023_1 (38) or 2024_1 (1); 25 of them are not on AWS
+at all. They are read from the
+Copernicus Data Space Ecosystem, which needs a CDSE account with Copernicus
+Contributing Missions access. `manifest/tiles.csv.gz` pins every tile's
+source keys, sizes and ETags, so a run never re-lists the upstream.
+
+Every raster is re-encoded losslessly (DEFLATE, 512 px blocks, overviews,
+embedded statistics, declared nodata) and checked pixel-for-pixel against the
+source before upload. Tiles are trimmed from 3601 to 3600 px where the source
+repeats its neighbours' edge.
+
+## Running it
+
+| Step | Command | Notes |
 |---|---|---|
-| Tracked and published | inside `catalog/` | STAC JSON, `README.md`, `AGENTS.md`, thumbnails, logos |
-| Tracked, never published | outside `catalog/` | `tools/`, `tests/`, `docs/`, this README, `catalog.publish.yaml` |
-| Neither | gitignored | GeoParquet, COGs, PMTiles, credentials |
+| Python env | `make venv` | System GDAL 3.8.4 + pinned boto3/obstore |
+| Manifest | `make manifest-check` | Fails if the upstream changed |
+| CDSE access | `make cdse-check` | Login in `~/.config/copdem/cdse-login` (mode 600) |
+| Transfer | `make bulk` | Resumable; state in `~/copernicus-dem-work/state` |
+| Progress | `make status`, `make retry-failed` | |
+| Audit | `make audit` | Every object vs its upload record, plus sha256 of 20 random tiles |
+| Metadata | `make metadata` | Footprints, overview, STAC, items.parquet, thumbnails, READMEs |
+| Gates | `make gate` | Repo tests, rashid, catalog grader |
+| Publish | `make publish-dry`, then `make publish` | Source Cooperative gateway, profile `source-coop-proxy` |
 
-The data lives in object storage next to the published metadata. The
-repository references it by URL and never stores it.
+Uploads go through `https://data.source.coop` with temporary credentials
+from the `source-coop` CLI. Pinned tools are in `config.yaml` (`toolchain`),
+including tylertoo, built from a fixed commit by `make tylertoo`.
 
-## Layout
+## Docs
 
-| Path | What it is |
-|---|---|
-| `catalog/` | The published tree, synced 1:1 to object storage |
-| `catalog.publish.yaml` | Where it publishes, and under what public URL |
-| `tools/publish.py` | The sync. Dry run by default |
-| `tools/upload_data.py` | The data upload. Dry run by default |
-| `tests/` | The gates CI runs on every pull request |
-| `docs/conformance.md` | Any validator finding this catalog accepts, and why |
-| `SETUP.md` | The checklist. Delete it when you are done |
-
-## Publish
-
-```bash
-python3 tools/publish.py            # dry run: what would change
-python3 tools/publish.py --confirm  # upload; needs AWS credentials
-```
-
-It never deletes. Removing a file from `catalog/` does not unpublish it, so
-delete the object yourself if that is what you meant.
-
-## Upload the data
-
-The data is too large for git, so it lives outside `catalog/`.
-`tools/upload_data.py` carries it to the same bucket prefix. Set `data_dir` in
-`catalog.publish.yaml` to the directory that holds it.
-
-```bash
-python3 tools/upload_data.py            # dry run: what would change
-python3 tools/upload_data.py --confirm  # upload; needs AWS credentials
-```
-
-Both scripts share one set of rules. `upload_data.py` imports the sentinel
-guard, the content types, the change detection, and the upload pool from
-`publish.py`. It changes one thing, the directory it walks. Only the suffixes
-in its allow-list upload, so staged scratch files stay out of the bucket.
-
-## Test
-
-```bash
-python3 tests/run_all.py
-```
-
-| Gate | What it checks |
-|---|---|
-| `test_setup.py` | Template placeholders are all edited, or all untouched |
-| `test_links.py` | Every relative link and asset href resolves |
-| `test_publish.py` | Nothing outside `catalog/` can be uploaded |
-| `test_upload_data.py` | Only staged files with an allowed suffix upload |
-| `test_stac_valid.py` | Valid STAC 1.1.0, via `stac-check` |
-| `test_conformance.py` | Portolan conformance, via `rashid` |
-
-The two validator gates skip when their tools are absent, so a clean checkout
-runs with no setup. CI installs both and enforces them.
-
-## What this template does not decide
-
-How a published catalog points back at the repository that maintains it. Three
-encodings are in use across real catalogs and none is standardized, so this
-template ships none of them rather than freezing one in by default. The
-tradeoffs are in
-[portolan-spec#145](https://github.com/portolan-sdi/portolan-spec/issues/145)
-and in the
-[git-backed catalogs guidance](https://github.com/portolan-sdi/portolan-spec/blob/main/specs/best-practices/git-backed-catalogs.md).
-
-## License
-
-Apache-2.0, covering the tooling in this repository. The data you catalog
-carries its own license, which belongs in `catalog/README.md`.
+- `docs/conformance.md`: known gaps against the Portolan spec, and why.
+- `catalog/AGENTS.md`: how to read the published data, with quoted sources.

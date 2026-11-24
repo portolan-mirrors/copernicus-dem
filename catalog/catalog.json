@@ -32,6 +32,12 @@
       "title": "Copernicus DEM GLO-30, release 2024_1"
     },
     {
+      "rel": "child",
+      "href": "./source-acquisitions/collection.json",
+      "type": "application/json",
+      "title": "TanDEM-X source acquisitions"
+    },
+    {
       "rel": "self",
       "href": "https://data.source.coop/portolan-mirrors/copernicus-dem/catalog.json",
       "type": "application/json"
@@ -61,5 +67,5 @@
       "title": "Report a problem"
     }
   ],
-  "updated": "2026-11-24T15:14:48Z"
+  "updated": "2026-11-24T15:39:37Z"
 }

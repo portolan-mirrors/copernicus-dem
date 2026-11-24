@@ -1,0 +1,236 @@
+{
+  "type": "Collection",
+  "id": "source-acquisitions",
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/file/v2.1.0/schema.json",
+    "https://stac-extensions.github.io/table/v1.2.0/schema.json",
+    "https://stac-extensions.github.io/web-map-links/v1.3.0/schema.json",
+    "https://schemas.portolan-sdi.org/portolan/v0.3.0/schema.json"
+  ],
+  "title": "Copernicus DEM source acquisitions (TanDEM-X footprints)",
+  "description": "Footprints of the TanDEM-X acquisitions behind each Copernicus DEM GLO-30 tile, collected from the SRC.kml file every tile ships with. The Product Handbook (issue 6.1, section 1.2.5.6) describes that file as \"a vector file (kml) containing the information of the data scenes used for DEM processing\", with \"the acquisition ID, data scene number, data acquisition date and time as well as information about the height of ambiguity of the data scenes.\" One row per distinct footprint; a footprint that recurs in several tiles' KML files is one row listing all of those tiles. Attribute values are copied as the KML gives them.",
+  "keywords": [
+    "TanDEM-X",
+    "InSAR",
+    "acquisition footprints",
+    "lineage",
+    "Copernicus DEM",
+    "GLO-30"
+  ],
+  "license": "other",
+  "providers": [
+    {
+      "name": "DLR e.V. (German Aerospace Center)",
+      "roles": [
+        "producer"
+      ],
+      "url": "https://www.dlr.de/",
+      "description": "Operates the TanDEM-X mission whose data the DEM is derived from."
+    },
+    {
+      "name": "Airbus Defence and Space GmbH",
+      "roles": [
+        "producer"
+      ],
+      "url": "https://www.airbus.com/en/products-services/space/earth-observation",
+      "description": "Produced the WorldDEM-based Copernicus DEM (the licence's 'Provider')."
+    },
+    {
+      "name": "European Space Agency (ESA) and European Union, Copernicus programme",
+      "roles": [
+        "licensor"
+      ],
+      "url": "https://dataspace.copernicus.eu/",
+      "description": "Provide the Copernicus DEM under COPERNICUS and license it (COP-DEM-GLO-30-F, Full, Free & Open)."
+    },
+    {
+      "name": "Portolan Mirrors",
+      "roles": [
+        "processor",
+        "host"
+      ],
+      "url": "https://source.coop/portolan-mirrors/copernicus-dem",
+      "description": "Maintains this mirror: the lossless re-encoding, STAC metadata, item index and documentation."
+    }
+  ],
+  "extent": {
+    "spatial": {
+      "bbox": [
+        [
+          -176.8396,
+          -0.56468,
+          174.189896,
+          5.555785
+        ]
+      ]
+    },
+    "temporal": {
+      "interval": [
+        [
+          "2010-12-12T04:04:00Z",
+          "2014-11-30T16:48:00Z"
+        ]
+      ]
+    }
+  },
+  "table:columns": [
+    {
+      "name": "name",
+      "type": "string",
+      "description": "The placemark name from SRC.kml, such as 1020979_02. The handbook says the file holds \"the acquisition ID, data scene number\"; it does not define how the name encodes them."
+    },
+    {
+      "name": "acquisition_set",
+      "type": "string",
+      "description": "\"Acquisition Set\" from the KML balloon: First, Second, First crossing, Second crossing, Additional or Other acquisition. The handbook does not define these sets."
+    },
+    {
+      "name": "acquisition_time",
+      "type": "timestamp",
+      "description": "\"Acquisition Date\" from the KML balloon, to the minute. The KML gives no time zone."
+    },
+    {
+      "name": "phase_unwrap",
+      "type": "string",
+      "description": "\"Phase Unwrap\" from the KML balloon: multi-baseline or single-baseline."
+    },
+    {
+      "name": "height_of_ambiguity",
+      "type": "number",
+      "description": "\"Height of Ambiguity\" from the KML balloon, as written. The KML gives no unit."
+    },
+    {
+      "name": "tiles",
+      "type": "array",
+      "description": "Item ids (grid cells, such as N00_E006) of the glo-30-2024-1 tiles whose SRC.kml lists this footprint."
+    },
+    {
+      "name": "tile_count",
+      "type": "integer",
+      "description": "Length of tiles."
+    },
+    {
+      "name": "geometry",
+      "type": "geometry",
+      "description": "The acquisition footprint polygon as given in the KML, EPSG:4326. Not clipped to any tile."
+    },
+    {
+      "name": "bbox",
+      "type": "object",
+      "description": "Bounding box covering column (xmin, ymin, xmax, ymax)."
+    }
+  ],
+  "table:primary_geometry": "geometry",
+  "assets": {
+    "data": {
+      "href": "./source-acquisitions.parquet",
+      "type": "application/vnd.apache.parquet",
+      "roles": [
+        "data"
+      ],
+      "title": "Acquisition footprints (GeoParquet)",
+      "description": "13,824 footprints from 400 tiles' SRC.kml files, GeoParquet 2.0 with a bbox covering column, Hilbert-sorted.",
+      "table:row_count": 13824,
+      "file:size": 1259485,
+      "file:checksum": "1220f3896f4fce60a751db2a8d0b4a1c8354ce746287e426cceb0de0d55e3a5d2709"
+    },
+    "tiles": {
+      "href": "./source-acquisitions.pmtiles",
+      "type": "application/vnd.pmtiles",
+      "roles": [
+        "visual"
+      ],
+      "title": "Acquisition footprints (PMTiles)",
+      "description": "Vector tiles of the GeoParquet, z0 to z10, layer source-acquisitions, built with tylertoo 31961fd2d0.",
+      "file:size": 9663537,
+      "file:checksum": "1220612b17e620d3b782a68fee28a5a061be6ffe7f49f1de602cf06967e5fac2e8c6"
+    },
+    "style": {
+      "href": "./styles/default.json",
+      "type": "application/vnd.mapbox.style+json",
+      "roles": [
+        "style",
+        "default"
+      ],
+      "title": "Footprints by acquisition set",
+      "description": "MapLibre style over the PMTiles, in the colours the producer's SRC.kml files use.",
+      "file:size": 1696,
+      "file:checksum": "122051e7e6e096f622961fd50410a552ed4eb71e7f8ecda2c4f5f4b2973069282277"
+    },
+    "thumbnail": {
+      "href": "./thumbnail.png",
+      "type": "image/png",
+      "roles": [
+        "thumbnail"
+      ],
+      "title": "Thumbnail",
+      "description": "Footprints near Mount Kenya in the default style, rendered by tools/thumbs.sh.",
+      "file:size": 947859,
+      "file:checksum": "1220c42c6fb2b2c3f2dbaaece9e9501c1756b8d6bb4e83fb34724d9068c5267f16b9"
+    }
+  },
+  "links": [
+    {
+      "rel": "root",
+      "href": "../catalog.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "parent",
+      "href": "../catalog.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "pmtiles",
+      "href": "./source-acquisitions.pmtiles",
+      "type": "application/vnd.pmtiles",
+      "pmtiles:layers": [
+        "source-acquisitions"
+      ]
+    },
+    {
+      "rel": "related",
+      "href": "../glo-30-2024-1/collection.json",
+      "type": "application/json",
+      "title": "Copernicus DEM GLO-30, release 2024_1 (the tiles these acquisitions built)"
+    },
+    {
+      "rel": "license",
+      "href": "../_assets/copernicus-dem-licences.pdf",
+      "type": "application/pdf",
+      "title": "Licence for the use of the Copernicus WorldDEM-30 (COP-DEM-GLO-30-F, pages 22-24)"
+    },
+    {
+      "rel": "via",
+      "href": "https://dataspace.copernicus.eu/explore-data/data-collections/copernicus-contributing-missions/collections-description/COP-DEM",
+      "type": "text/html",
+      "title": "Copernicus DEM on the Copernicus Data Space Ecosystem"
+    },
+    {
+      "rel": "cite-as",
+      "href": "https://doi.org/10.5270/ESA-c5d3d65",
+      "type": "text/html",
+      "title": "Copernicus DEM, doi:10.5270/ESA-c5d3d65"
+    },
+    {
+      "rel": "describedby",
+      "href": "https://dataspace.copernicus.eu/sites/default/files/media/files/2026-10/geo1988-copernicusdem-spe-002_producthandbook_i6.1.pdf",
+      "type": "application/pdf",
+      "title": "Copernicus DEM Product Handbook, issue 6.1 (section 1.2.5.6)"
+    },
+    {
+      "rel": "describedby",
+      "href": "./README.md",
+      "type": "text/markdown",
+      "title": "Collection README"
+    },
+    {
+      "rel": "agents",
+      "href": "./AGENTS.md",
+      "type": "text/markdown",
+      "title": "Collection agent guide"
+    }
+  ],
+  "updated": "2026-11-24T15:39:37Z"
+}
