@@ -20,12 +20,17 @@ jobs:
 
       # rashid 0.4.x, the range tests/test_conformance.py checks at run time
       # and the one the other portolan-mirrors catalogs validate with.
-      #
-      # stac-check stays unpinned on purpose. The stac-check exemption in
-      # docs/conformance.md expires when the upstream crash stops. That only
-      # happens if CI takes each new release.
+      # stac-node-validator at the release the Portolan registry pins (see
+      # tests/stac-node-validator/package.json), so this gate checks what the
+      # registry checks.
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "22"
+
       - name: Install the validators
-        run: python -m pip install 'rashid>=0.4.0,<0.5.0' stac-check
+        run: |
+          python -m pip install 'rashid>=0.4.0,<0.5.0'
+          npm ci --prefix tests/stac-node-validator --no-audit --no-fund
 
       - name: Lint the tooling
         run: |

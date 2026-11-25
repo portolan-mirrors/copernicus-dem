@@ -58,8 +58,8 @@ WHERE bbox.xmin <= 34.525 AND bbox.xmax >= 34.525 AND bbox.ymin <= 1.125 AND bbo
 
 ## Join keys
 
-`tiles` holds item ids of the `glo-30-2024-1` collection (for example
-`N01_E034`), so `list_contains(tiles, id)` or `UNNEST(tiles)` joins a footprint to the
+`tiles` holds item ids of the `glo-30-2024-1` collection, such as
+`N01_E034`, so `list_contains(tiles, id)` or `UNNEST(tiles)` joins a footprint to the
 tiles it built. A footprint can list several tiles, and a tile has many
 footprints.
 
