@@ -39,12 +39,91 @@ repeats its neighbours' edge.
 | Progress | `make status`, `make retry-failed` | |
 | Audit | `make audit` | Every object vs its upload record, plus sha256 of 20 random tiles |
 | Metadata | `make metadata` | Footprints, overview, STAC, items.parquet, thumbnails, READMEs |
-| Gates | `make gate` | Repo tests, rashid, catalog grader |
-| Publish | `make publish-dry`, then `make publish` | Source Cooperative gateway, profile `source-coop-proxy` |
+| Gates | `make gate` | Repo tests (links, publish contract, rashid, stac-node-validator), then the catalog grader from `~/unosat/work/collect_facts_fast.py`, a local script not in this repo |
+| Publish | `make publish-dry`, then `make publish` | See [Publishing](#publishing) |
 
-Uploads go through `https://data.source.coop` with temporary credentials
-from the `source-coop` CLI. Pinned tools are in `config.yaml` (`toolchain`),
-including tylertoo, built from a fixed commit by `make tylertoo`.
+Pinned tools are in `config.yaml` (`toolchain`), including tylertoo, built
+from a fixed commit by `make tylertoo`.
+
+## Publishing
+
+**Nothing publishes automatically.** CI has read-only access and no bucket
+credentials, and merging a pull request uploads nothing. The bucket changes
+only when someone runs the commands below from a checkout. So the published
+catalog can fall behind `main`: after merging a change under `catalog/`, run
+`make publish` from an up-to-date `main`.
+
+### What goes where
+
+Everything lands under `s3://portolan-mirrors/copernicus-dem/`, served at
+`https://data.source.coop/portolan-mirrors/copernicus-dem/`. Three routes
+upload, and each owns its own files:
+
+| What | Uploaded by | From |
+|---|---|---|
+| Tile COGs and XML, `glo-30-2024-1/<id>/*` (158,850 objects) | `make bulk` (`tools/bulk.py`), as each tile is encoded | the upstream sources, through `/scratch` |
+| Collection-level data: the overview COG, `source-acquisitions.parquet` and `.pmtiles` | `tools/upload_data.py` (first half of `make publish`) | `data_dir` in `catalog.publish.yaml` (`~/copernicus-dem-work/staging`) |
+| The catalog: STAC JSON, `items.parquet`, READMEs, AGENTS guides, style, thumbnails, licence | `tools/publish.py` (second half of `make publish`) | `catalog/`, synced 1:1 |
+
+`make publish` uploads the data before the catalog, so a published catalog
+never links to a file that is not there yet.
+
+### Credentials
+
+Uploads go through the Source Cooperative gateway with temporary credentials
+from the `source-coop` CLI (0.3.0). One-time setup:
+
+1. Install the CLI and log in: `source-coop login`. It caches the login in
+   `~/.cache/source-coop/credentials`; do not delete that file, or the
+   browser login must be redone.
+2. Add this profile to `~/.aws/config`:
+
+   ```ini
+   [profile source-coop-proxy]
+   credential_process = source-coop creds
+   endpoint_url = https://data.source.coop
+   region = us-west-2
+   ```
+
+3. Run the scripts with `.venv/bin/python` (`make venv`), as the make
+   targets do. The apt botocore 1.34 fails to sign through the gateway.
+
+The credentials are short-lived: the first full `make bulk` hit an expired
+set 42 minutes in. The run then stops with a `credentials:` message, and
+rerunning the same command resumes where it stopped.
+
+### Procedure
+
+1. Rebuild what changed. Docs or metadata only: edit, then `make stac readme`
+   (READMEs are generated, so edit their sources: `tools/stac.py`,
+   `catalog/*/.portolan/metadata.yaml`, `tools/fix_readmes.py`). Data:
+   `make bulk`, `make audit`, `make metadata`.
+2. `make gate`. It must pass: repo tests, rashid, stac-node-validator.
+3. `make publish-dry`. It lists every file it would upload. Upload is by
+   change: a file whose size and MD5 match the bucket's copy is skipped, so a
+   docs fix uploads a handful of files, not 26,490.
+4. `make publish`.
+5. Check the live catalog:
+
+   ```bash
+   rashid check catalog --no-data --live --summary
+   ```
+
+   With `--live`, rashid reads the full local tree and checks that every
+   linked document exists at the public URL. Run it against the directory,
+   not the URL: a URL crawl stops at 10,000 files and then reports the
+   unread items as broken links.
+
+### Things the scripts never do
+
+- **Delete.** Removing a file from `catalog/` or the staging directory does
+  not unpublish it. Delete the object in the bucket yourself if that is
+  what you meant.
+- **Re-upload unchanged bytes.** After changing a content type in
+  `tools/publish.py`, run `tools/publish.py --confirm --force` so existing
+  objects get the new header.
+- **Publish anything outside `catalog/` and `data_dir`.** That boundary is
+  structural; do not move files into `catalog/` to make them publish.
 
 ## Docs
 
