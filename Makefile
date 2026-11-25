@@ -39,7 +39,7 @@ retry-failed: venv
 # installs on the machine are untouched.
 TYLERTOO_COMMIT := $(shell python3 -I -c "import yaml;print(yaml.safe_load(open('config.yaml'))['toolchain']['tylertoo']['commit'])")
 TYLERTOO_ROOT := $(HOME)/copernicus-dem-work/tylertoo-$(shell echo $(TYLERTOO_COMMIT) | cut -c1-10)
-.PHONY: tylertoo acquisitions overview stac items-parquet thumbs readme metadata gate audit cdse-check publish-dry publish
+.PHONY: verify-equiv tylertoo acquisitions overview stac items-parquet thumbs readme metadata gate audit cdse-check publish-dry publish
 tylertoo: $(TYLERTOO_ROOT)/bin/tylertoo
 $(TYLERTOO_ROOT)/bin/tylertoo:
 	rm -rf /scratch/copdem/build/tylertoo
@@ -86,6 +86,9 @@ audit: venv
 	$(PY) tools/audit.py --sample 20 $(ARGS)
 
 # Can the CDSE account download 2024_1 products yet (OData and S3)?
+verify-equiv: venv
+	$(PY) tools/verify_equiv.py $(ARGS)
+
 cdse-check: venv
 	$(PY) tools/cdse_check.py
 

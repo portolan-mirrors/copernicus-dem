@@ -75,10 +75,12 @@ def check_toolchain() -> None:
     import obstore
     from osgeo import gdal
 
-    want = CONFIG["toolchain"]
+    # Only the libraries that write or move the bytes; other toolchain entries
+    # (tylertoo) belong to later stages and are checked there.
     have = {"gdal": gdal.__version__, "numpy": numpy.__version__, "boto3": boto3.__version__,
             "obstore": obstore.__version__}
-    bad = {k: (have[k], str(v)) for k, v in want.items() if have[k] != str(v)}
+    want = {k: str(CONFIG["toolchain"][k]) for k in have}
+    bad = {k: (have[k], want[k]) for k in have if have[k] != want[k]}
     if bad:
         sys.exit(f"toolchain mismatch (have, want): {bad}")
 
@@ -178,6 +180,17 @@ def _fetch_cdse(row: dict, dest: Path) -> None:
             rel = o["path"][len(prefix):]
             if not rel.endswith(CDSE_WANTED) or rel.endswith("_QL.tif"):
                 continue
+            # A CDSE product is <product>/<tile>/{DEM/,AUXFILES/,PREVIEW/,<tile>.xml}
+            # plus product-level XMLs (GSC_CR_*.xml, INSPIRE.xml) beside <tile>/.
+            # Rebuild the AWS layout encode.py reads: drop the <tile>/ level,
+            # lift DEM/*_DEM.tif to the root, skip the product-level files.
+            parts = rel.split("/")
+            if len(parts) < 2:
+                continue
+            parts = parts[1:]
+            if parts[0] == "DEM":
+                parts = parts[1:]
+            rel = "/".join(parts)
             if _download(store, o["path"], dest / rel) != o["size"]:
                 raise RuntimeError(f"{o['path']}: size mismatch")
             got += 1

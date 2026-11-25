@@ -31,7 +31,7 @@ PRODUCT_NAME = "DEM1_SAR_DGE_30_20110318T032119_20141130T032137_ADS_000000_b1lO_
 DOWNLOAD = f"https://download.dataspace.copernicus.eu/odata/v1/Products({PRODUCT_ID})/$value"
 S3_KEY = ("CCM/COP-DEM_GLO-30-DGED/SAR_DGE_30_A4AD/2011/03/18/"
           "DEM1_SAR_DGE_30_20110318T032119_20141130T032137_ADS_000000_b1lO_87525a93/"
-          "DEM/Copernicus_DSM_10_N00_00_E036_00_DEM.tif")
+          "Copernicus_DSM_10_N00_00_E036_00/DEM/Copernicus_DSM_10_N00_00_E036_00_DEM.tif")
 
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -70,7 +70,14 @@ def odata() -> bool:
             if e.code in (301, 302, 303, 307, 308):
                 url = e.headers["Location"]
                 continue
-            print(f"odata: download HTTP {e.code} {e.read(300).decode(errors='replace').strip()}")
+            body = e.read(300).decode(errors="replace").strip()
+            if e.code == 416 and "DAT-ZIP-116" in body:
+                # A product downloads as one zip, which refuses byte ranges.
+                # The service checks access first (403 DAT-ZIP-608 when denied),
+                # so reaching this error means the account may download.
+                print("odata: access OK (product zip refuses byte ranges: DAT-ZIP-116)")
+                return True
+            print(f"odata: download HTTP {e.code} {body}")
             return False
     print("odata: too many redirects")
     return False
