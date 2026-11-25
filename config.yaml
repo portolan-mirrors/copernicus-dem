@@ -1,0 +1,60 @@
+# Settings for the bulk transfer (tools/bulk.py). Committed, so a run is
+# reproducible from git: the manifest says what, this file says how.
+
+collection: glo-30-2024-1
+
+# Where outputs go. Uploads use the Source Cooperative gateway with the
+# source-coop CLI's temporary credentials (credential_process), the same route
+# as the other portolan-mirrors catalogs. Keys are <write_prefix>/<collection>/
+# <item>/<file>.
+upload:
+  profile: source-coop-proxy
+  endpoint_url: https://data.source.coop
+  bucket: portolan-mirrors
+  prefix: copernicus-dem
+  public_base: https://data.source.coop/portolan-mirrors/copernicus-dem
+
+sources:
+  aws:
+    bucket: copernicus-dem-30m
+    region: eu-central-1
+    workers: 96          # tile pipelines in flight; each fetches, encodes, uploads
+  cdse:
+    profile: cdse
+    endpoint_url: https://eodata.dataspace.copernicus.eu
+    bucket: eodata
+    workers: 4           # CDSE quota: 4 concurrent connections per user
+
+# Local paths. Scratch is wiped when the machine stops, so only in-flight
+# tiles live there. State and per-tile results live on the root disk.
+scratch: /scratch/copdem/work
+state_dir: /home/ubuntu/copernicus-dem-work/state
+results_dir: /home/ubuntu/copernicus-dem-work/results
+kml_dir: /home/ubuntu/copernicus-dem-work/src_kml
+log_dir: /home/ubuntu/copernicus-dem-work/logs
+# Built collection-level data (overview COG, footprint GeoParquet and PMTiles),
+# laid out as on the bucket. tools/upload_data.py uploads it (data_dir in
+# catalog.publish.yaml); it never enters git or catalog/.
+staging_dir: /home/ubuntu/copernicus-dem-work/staging
+
+# The toolchain the outputs were produced with. bulk.py refuses to run on
+# anything else, because a different GDAL can write different bytes.
+toolchain:
+  gdal: 3.8.4
+  numpy: 1.26.4
+  boto3: 1.44.10
+  obstore: 0.12.1
+  # PMTiles for source-acquisitions. Built from this commit, not a crates.io
+  # release (0.8.0 on crates.io predates much of main): make tylertoo.
+  tylertoo:
+    repo: https://github.com/geoparquet-io/tylertoo
+    commit: 31961fd2d0e6edc63d44c7f4c0cfeb48b5c76b78
+    bin: ~/copernicus-dem-work/tylertoo-31961fd2d0/bin/tylertoo
+
+# Thumbnail framing (tools/thumbs.py). Centres are lon, lat. Re-pick after
+# the full run; the test subset covers only a band near the equator.
+thumbnails:
+  skill_dir: ~/.claude/plugins/cache/portolan-skills/portolan/0.5.0/skills/portolan-thumbnails
+  dem_center: [35.0, 2.0]
+  acq_center: [37.3, 0.3]
+  acq_zoom: 8

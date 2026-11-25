@@ -33,3 +33,6 @@ __pycache__/
 *.pyc
 .venv/
 .ruff_cache/
+
+# stac-node-validator install (tests/stac-node-validator)
+node_modules/

@@ -34,7 +34,14 @@ something.
 
 ## Accepted deviations
 
-None.
+None at error severity, so `ACCEPTED` in `tests/test_conformance.py` stays
+empty. Two known gaps that need no allow-list entry are recorded here so
+nobody has to rediscover them.
+
+| Rule | Where | Why accepted | Tracking |
+|---|---|---|---|
+| PTL-CAT-001 (warning) | `glo-30-2024-1`, 26,475 items in one flat list | Same layout as the other portolan-mirrors raster mirrors (GSWE: 504 flat items per collection). `items.parquet` (stac-geoparquet, `collection-mirror` role) is the bulk route, and a grid of 1° subcatalogs would add 300+ catalog files a client walks for no query it cannot already do on the table. | none; revisit if the spec turns the warning into an error |
+| PORTO-FMT-026 to 029 (not flagged by rashid 0.4.0) | `hem` asset of tiles whose Height Error Mask is entirely -32767 (edited), e.g. `N01_E119` | Every pixel is nodata, so minimum, maximum, mean and standard deviation do not exist. GDAL refuses to compute them. The COG carries `STATISTICS_VALID_PERCENT=0` and the STAC band `statistics: {"valid_percent": 0}`, which states the fact without inventing numbers. tools/encode.py marks such bands `all_nodata`. | to file against portolan-spec: what an all-nodata band should carry |
 
 <!--
 When you accept one, add a row and a section explaining it, like this:
@@ -49,36 +56,5 @@ neither.
 
 ## Validator workarounds
 
-### stac-check reports a dialect crash on every collection
-
-`tests/test_stac_valid.py` exempts one stac-check failure:
-
-```
-'list' object has no attribute 'get'
-[Schema: https://schemas.portolan-sdi.org/portolan/vX.Y.Z/schema.json]. Error in Extensions.
-```
-
-The Portolan schema is valid draft-07, and rashid validates catalogs against it
-cleanly. `stac-validator`, which stac-check uses, hardcodes the JSON Schema
-2020-12 dialect and ignores the `$schema` a schema declares. The profile schema
-uses the draft-07 tuple form of `items` in `valid_bbox`, which means something
-different under 2020-12, so the library raises instead of validating.
-
-Tracked upstream at <https://github.com/stac-utils/stac-check/issues/159>,
-and on the Portolan side at
-<https://github.com/portolan-sdi/portolan-spec/issues/157>.
-
-The exemption matches that exact message, and only when the failing schema is a
-Portolan profile schema. Every other stac-check error still fails the build,
-and the gate prints how many objects took the exemption.
-
-The exemption expires on its own. The gate fails once stac-check stops emitting
-the crash on a collection or item that declares the profile schema, and tells
-you to delete both the exemption and this section. CI installs stac-check
-unpinned, so the next release triggers that without anyone watching for it.
-
-`tests/test_stac_valid.py` also fails when stac-check is absent, and prints the
-install command. It takes no version floor and no pin. The rashid floor exists
-because that gate asserts four named rules. This gate asserts no stac-check
-rule. It needs the opposite property. A pin holds the exemption open after the
-upstream fix ships.
+None. `tests/test_stac_valid.py` runs stac-node-validator at the release the
+Portolan registry pins, and it validates this catalog without exemptions.

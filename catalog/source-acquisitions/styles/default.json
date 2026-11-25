@@ -1,0 +1,91 @@
+{
+  "version": 8,
+  "name": "TanDEM-X source acquisitions",
+  "metadata": {
+    "description": "Footprints coloured as in the producer's SRC.kml files: red for the first acquisition set (including first crossing), blue for the second (including second crossing), green for additional and other acquisitions."
+  },
+  "sources": {
+    "acquisitions": {
+      "type": "vector",
+      "url": "pmtiles://../source-acquisitions.pmtiles",
+      "minzoom": 0,
+      "maxzoom": 10,
+      "attribution": "produced using Copernicus WorldDEM-30 \u00a9 DLR e.V. 2010-2014 and \u00a9 Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved"
+    }
+  },
+  "layers": [
+    {
+      "id": "acquisitions-fill",
+      "type": "fill",
+      "source": "acquisitions",
+      "source-layer": "source-acquisitions",
+      "paint": {
+        "fill-color": [
+          "match",
+          [
+            "get",
+            "acquisition_set"
+          ],
+          [
+            "First acquisition",
+            "First crossing acquisition",
+            "First desert acquisition"
+          ],
+          "#ff0000",
+          [
+            "Second acquisition",
+            "Second crossing acquisition",
+            "Second desert acquisition"
+          ],
+          "#247fff",
+          "#00ee00"
+        ],
+        "fill-opacity": 0.06
+      }
+    },
+    {
+      "id": "acquisitions-outline",
+      "type": "line",
+      "source": "acquisitions",
+      "source-layer": "source-acquisitions",
+      "paint": {
+        "line-color": [
+          "match",
+          [
+            "get",
+            "acquisition_set"
+          ],
+          [
+            "First acquisition",
+            "First crossing acquisition",
+            "First desert acquisition"
+          ],
+          "#ff0000",
+          [
+            "Second acquisition",
+            "Second crossing acquisition",
+            "Second desert acquisition"
+          ],
+          "#247fff",
+          "#00ee00"
+        ],
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          0,
+          0.3,
+          6,
+          1,
+          10,
+          2
+        ],
+        "line-opacity": 0.8
+      }
+    }
+  ]
+}

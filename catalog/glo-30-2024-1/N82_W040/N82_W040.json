@@ -1,0 +1,679 @@
+{
+  "type": "Feature",
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/file/v2.1.0/schema.json",
+    "https://stac-extensions.github.io/projection/v2.0.0/schema.json",
+    "https://stac-extensions.github.io/raster/v2.0.0/schema.json",
+    "https://stac-extensions.github.io/classification/v2.0.0/schema.json",
+    "https://stac-extensions.github.io/render/v2.0.0/schema.json",
+    "https://stac-extensions.github.io/processing/v1.2.0/schema.json"
+  ],
+  "id": "N82_W040",
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          -40.000694444,
+          82.000138889
+        ],
+        [
+          -39.000694444,
+          82.000138889
+        ],
+        [
+          -39.000694444,
+          83.000138889
+        ],
+        [
+          -40.000694444,
+          83.000138889
+        ],
+        [
+          -40.000694444,
+          82.000138889
+        ]
+      ]
+    ]
+  },
+  "bbox": [
+    -40.000694444,
+    82.000138889,
+    -39.000694444,
+    83.000138889
+  ],
+  "properties": {
+    "title": "Copernicus DEM GLO-30 tile N82_W040",
+    "datetime": null,
+    "start_datetime": "2010-12-14T18:50:04Z",
+    "end_datetime": "2014-03-06T10:44:59Z",
+    "proj:code": "EPSG:4326",
+    "proj:shape": [
+      3600,
+      720
+    ],
+    "proj:transform": [
+      0.001388888888888889,
+      0.0,
+      -40.00069444444444,
+      0.0,
+      -0.0002777777777777778,
+      83.00013888888888
+    ],
+    "copdem:release": "2024_1",
+    "copdem:release_changed": "2019_2",
+    "copdem:eop_identifier": "urn:eop:DLR:CDEM30:Copernicus_DSM_10_N82_00_W040_00:V3M7j-2019_2",
+    "copdem:source_product": "DEM1_SAR_DGE_30_20101214T185004_20140306T104459_ADS_000000_3M7j_43c8b4d5.DEM",
+    "copdem:pixel_source": "aws",
+    "processing:lineage": "Release 2024_1 tile DEM1_SAR_DGE_30_20101214T185004_20140306T104459_ADS_000000_3M7j_43c8b4d5.DEM (urn:eop:DLR:CDEM30:Copernicus_DSM_10_N82_00_W040_00:V3M7j-2019_2). Pixels read from the AWS Open Data copy s3://copernicus-dem-30m (2021 release, already trimmed to 720x3600); the tile last changed in release 2019_2, which that copy holds. Re-encoded losslessly (DEFLATE) with embedded statistics; every output was checked pixel-for-pixel against its source.",
+    "processing:software": {
+      "GDAL": "3.8.4"
+    },
+    "renders": {
+      "dem": {
+        "title": "Elevation",
+        "assets": [
+          "dem"
+        ],
+        "rescale": [
+          [
+            -1.3287115097046,
+            1209.0960693359
+          ]
+        ],
+        "colormap_name": "terrain",
+        "resampling": "bilinear"
+      },
+      "edm": {
+        "title": "Editing Mask (EDM)",
+        "assets": [
+          "edm"
+        ],
+        "colormap": {
+          "0": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "1": [
+            224,
+            224,
+            224,
+            255
+          ],
+          "2": [
+            230,
+            159,
+            0,
+            255
+          ],
+          "3": [
+            86,
+            180,
+            233,
+            255
+          ],
+          "4": [
+            0,
+            158,
+            115,
+            255
+          ],
+          "5": [
+            240,
+            228,
+            66,
+            255
+          ],
+          "6": [
+            213,
+            94,
+            0,
+            255
+          ],
+          "7": [
+            204,
+            121,
+            167,
+            255
+          ],
+          "8": [
+            8,
+            48,
+            107,
+            255
+          ],
+          "9": [
+            33,
+            113,
+            181,
+            255
+          ],
+          "10": [
+            107,
+            174,
+            214,
+            255
+          ],
+          "11": [
+            253,
+            208,
+            162,
+            255
+          ],
+          "12": [
+            140,
+            81,
+            10,
+            255
+          ],
+          "13": [
+            118,
+            42,
+            131,
+            255
+          ]
+        },
+        "resampling": "nearest",
+        "nodata": 0
+      },
+      "flm": {
+        "title": "Filling Mask (FLM)",
+        "assets": [
+          "flm"
+        ],
+        "colormap": {
+          "0": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "1": [
+            189,
+            189,
+            189,
+            255
+          ],
+          "2": [
+            240,
+            240,
+            240,
+            255
+          ],
+          "3": [
+            228,
+            26,
+            28,
+            255
+          ],
+          "4": [
+            55,
+            126,
+            184,
+            255
+          ],
+          "5": [
+            77,
+            175,
+            74,
+            255
+          ],
+          "6": [
+            152,
+            78,
+            163,
+            255
+          ],
+          "7": [
+            255,
+            127,
+            0,
+            255
+          ],
+          "8": [
+            255,
+            255,
+            51,
+            255
+          ],
+          "9": [
+            166,
+            86,
+            40,
+            255
+          ],
+          "100": [
+            247,
+            129,
+            191,
+            255
+          ],
+          "101": [
+            27,
+            158,
+            119,
+            255
+          ],
+          "102": [
+            231,
+            41,
+            138,
+            255
+          ]
+        },
+        "resampling": "nearest",
+        "nodata": 0
+      },
+      "wbm": {
+        "title": "Water Body Mask (WBM)",
+        "assets": [
+          "wbm"
+        ],
+        "colormap": {
+          "0": [
+            255,
+            255,
+            255,
+            0
+          ],
+          "1": [
+            8,
+            48,
+            107,
+            255
+          ],
+          "2": [
+            33,
+            113,
+            181,
+            255
+          ],
+          "3": [
+            107,
+            174,
+            214,
+            255
+          ]
+        },
+        "resampling": "nearest"
+      }
+    }
+  },
+  "links": [
+    {
+      "rel": "root",
+      "href": "../../catalog.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "parent",
+      "href": "../collection.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "collection",
+      "href": "../collection.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "via",
+      "href": "https://catalogue.dataspace.copernicus.eu/odata/v1/Products?$filter=Name%20eq%20%27DEM1_SAR_DGE_30_20101214T185004_20140306T104459_ADS_000000_3M7j_43c8b4d5.DEM%27",
+      "type": "application/json",
+      "title": "Source product in the CDSE catalogue (OData)"
+    },
+    {
+      "rel": "via",
+      "href": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N82_00_W040_00_DEM/Copernicus_DSM_COG_10_N82_00_W040_00_DEM.tif",
+      "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+      "title": "DEM tile in the AWS Open Data copy that the pixels were read from"
+    }
+  ],
+  "assets": {
+    "dem": {
+      "href": "./N82_W040_DEM.tif",
+      "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+      "title": "Elevation (DSM)",
+      "description": "Digital surface model heights in metres above the EGM2008 geoid (EPSG:3855), float32, RasterPixelIsPoint. The handbook gives -32,767 as a NoData value for \"EEA-10 only\"; GLO-30 is void-filled and this asset declares no nodata.",
+      "roles": [
+        "data"
+      ],
+      "file:size": 7810327,
+      "file:checksum": "12204ad76d5b4b33d65b2a04a62ac424d0e017e26b947ca76a42d84d746818f2a78f",
+      "bands": [
+        {
+          "name": "elevation",
+          "data_type": "float32",
+          "raster:sampling": "point",
+          "unit": "m",
+          "statistics": {
+            "minimum": -1.3287115097046,
+            "maximum": 1209.0960693359,
+            "mean": 629.57858941629,
+            "stddev": 336.79822941573,
+            "valid_percent": 100.0
+          }
+        }
+      ]
+    },
+    "hem": {
+      "href": "./N82_W040_HEM.tif",
+      "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+      "title": "Height Error Mask (HEM)",
+      "description": "\"The Height Error Mask (HEM) represents the corresponding height error for each DEM pixel in the form of the standard deviation derived from the interferometric coherence and geometrical considerations.\" Edited pixels are coded -32,767 (declared as nodata): \"The Editing Mask as well as the Filling Mask support the interpretation of the HEM for areas coded with -32,767.\"",
+      "roles": [
+        "data",
+        "quality"
+      ],
+      "file:size": 9451594,
+      "file:checksum": "12208033fe50f0d6542a7d66cd30123d27600d6caea8a5bca1ee9ab228237037dd62",
+      "nodata": -32767.0,
+      "bands": [
+        {
+          "name": "height_error",
+          "data_type": "float32",
+          "raster:sampling": "point",
+          "nodata": -32767.0,
+          "unit": "m",
+          "statistics": {
+            "minimum": 0.15687224268913,
+            "maximum": 7.2906632423401,
+            "mean": 0.54700156051661,
+            "stddev": 0.22508849190929,
+            "valid_percent": 90.73
+          }
+        }
+      ]
+    },
+    "edm": {
+      "href": "./N82_W040_EDM.tif",
+      "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+      "title": "Editing Mask (EDM)",
+      "description": "Editing applied to each DEM pixel (handbook Table 6). 0 is \"Void (no data)\".",
+      "roles": [
+        "data",
+        "quality"
+      ],
+      "file:size": 73136,
+      "file:checksum": "1220829fb33446f0d11c1692f52bea50816f3dd535470baa802b46d03ea13497cf52",
+      "nodata": 0,
+      "classification:classes": [
+        {
+          "value": 0,
+          "name": "void",
+          "title": "Void (no data)",
+          "color_hint": "000000",
+          "nodata": true
+        },
+        {
+          "value": 1,
+          "name": "not_edited",
+          "title": "Not edited",
+          "color_hint": "E0E0E0"
+        },
+        {
+          "value": 2,
+          "name": "infill",
+          "title": "Infill of external elevation data",
+          "color_hint": "E69F00"
+        },
+        {
+          "value": 3,
+          "name": "interpolated",
+          "title": "Interpolated pixels",
+          "color_hint": "56B4E9"
+        },
+        {
+          "value": 4,
+          "name": "smoothed",
+          "title": "Smoothed pixels",
+          "color_hint": "009E73"
+        },
+        {
+          "value": 5,
+          "name": "airport",
+          "title": "Airport editing",
+          "color_hint": "F0E442"
+        },
+        {
+          "value": 6,
+          "name": "raised_negative",
+          "title": "Raised negative elevation pixels",
+          "color_hint": "D55E00"
+        },
+        {
+          "value": 7,
+          "name": "flattened",
+          "title": "Flattened pixels",
+          "color_hint": "CC79A7"
+        },
+        {
+          "value": 8,
+          "name": "ocean",
+          "title": "Ocean pixels",
+          "color_hint": "08306B"
+        },
+        {
+          "value": 9,
+          "name": "lake",
+          "title": "Lake pixels",
+          "color_hint": "2171B5"
+        },
+        {
+          "value": 10,
+          "name": "river",
+          "title": "River pixels",
+          "color_hint": "6BAED6"
+        },
+        {
+          "value": 11,
+          "name": "shoreline",
+          "title": "Shoreline pixels",
+          "color_hint": "FDD0A2"
+        },
+        {
+          "value": 12,
+          "name": "morphed",
+          "title": "Morphed pixels (series of pixels manually set)",
+          "color_hint": "8C510A"
+        },
+        {
+          "value": 13,
+          "name": "shifted",
+          "title": "Shifted pixels",
+          "color_hint": "762A83"
+        }
+      ],
+      "bands": [
+        {
+          "name": "editing",
+          "data_type": "uint8",
+          "raster:sampling": "point",
+          "nodata": 0,
+          "statistics": {
+            "minimum": 1.0,
+            "maximum": 11.0,
+            "mean": 1.574619212963,
+            "stddev": 1.8956111666898,
+            "valid_percent": 100.0
+          }
+        }
+      ]
+    },
+    "flm": {
+      "href": "./N82_W040_FLM.tif",
+      "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+      "title": "Filling Mask (FLM)",
+      "description": "\"All edited and filled pixels are flagged in this mask. For filled pixels, the fill source is specified.\" (handbook 1.2.5.2, Table 7). 0 is \"Void (no data)\".",
+      "roles": [
+        "data",
+        "quality"
+      ],
+      "file:size": 70669,
+      "file:checksum": "1220babe44724dcbf796137b45008080ada145fbb82fbfb08e3fed60c319814fd451",
+      "nodata": 0,
+      "classification:classes": [
+        {
+          "value": 0,
+          "name": "void",
+          "title": "Void (no data)",
+          "color_hint": "000000",
+          "nodata": true
+        },
+        {
+          "value": 1,
+          "name": "edited",
+          "title": "Edited (except filled pixels)",
+          "color_hint": "BDBDBD"
+        },
+        {
+          "value": 2,
+          "name": "not_edited_not_filled",
+          "title": "Not edited / not filled",
+          "color_hint": "F0F0F0"
+        },
+        {
+          "value": 3,
+          "name": "aster",
+          "title": "ASTER",
+          "color_hint": "E41A1C"
+        },
+        {
+          "value": 4,
+          "name": "srtm90",
+          "title": "SRTM90",
+          "color_hint": "377EB8"
+        },
+        {
+          "value": 5,
+          "name": "srtm30",
+          "title": "SRTM30",
+          "color_hint": "4DAF4A"
+        },
+        {
+          "value": 6,
+          "name": "gmted2010",
+          "title": "GMTED2010",
+          "color_hint": "984EA3"
+        },
+        {
+          "value": 7,
+          "name": "srtm30plus",
+          "title": "SRTM30plus",
+          "color_hint": "FF7F00"
+        },
+        {
+          "value": 8,
+          "name": "tsx_radargrammetric",
+          "title": "TerraSAR-X Radargrammetric DEM",
+          "color_hint": "FFFF33"
+        },
+        {
+          "value": 9,
+          "name": "aw3d30",
+          "title": "AW3D30",
+          "color_hint": "A65628"
+        },
+        {
+          "value": 100,
+          "name": "norway_dem",
+          "title": "Norway DEM",
+          "color_hint": "F781BF"
+        },
+        {
+          "value": 101,
+          "name": "dsm05_spain",
+          "title": "DSM05 Spain",
+          "color_hint": "1B9E77"
+        },
+        {
+          "value": 102,
+          "name": "norway_dem_v2",
+          "title": "Norway DEM v2",
+          "color_hint": "E7298A"
+        }
+      ],
+      "bands": [
+        {
+          "name": "filling",
+          "data_type": "uint8",
+          "raster:sampling": "point",
+          "nodata": 0,
+          "statistics": {
+            "minimum": 1.0,
+            "maximum": 6.0,
+            "mean": 1.9281203703704,
+            "stddev": 0.30085010882516,
+            "valid_percent": 100.0
+          }
+        }
+      ]
+    },
+    "wbm": {
+      "href": "./N82_W040_WBM.tif",
+      "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+      "title": "Water Body Mask (WBM)",
+      "description": "\"The Water Body Mask (WBM) shows all DEM pixels, which are classified as water and edited according to the categories Ocean, Lake or River.\" (handbook 1.2.5.4, Table 8). 0 means \"No water\" and is a value, not nodata.",
+      "roles": [
+        "data",
+        "quality"
+      ],
+      "file:size": 21962,
+      "file:checksum": "12208881be53aeaf43e77a054e48316679ca255652c4914557cf10ff86456c43debd",
+      "classification:classes": [
+        {
+          "value": 0,
+          "name": "no_water",
+          "title": "No water",
+          "color_hint": "FFFFFF"
+        },
+        {
+          "value": 1,
+          "name": "ocean",
+          "title": "Ocean",
+          "color_hint": "08306B"
+        },
+        {
+          "value": 2,
+          "name": "lake",
+          "title": "Lake",
+          "color_hint": "2171B5"
+        },
+        {
+          "value": 3,
+          "name": "river",
+          "title": "River",
+          "color_hint": "6BAED6"
+        }
+      ],
+      "bands": [
+        {
+          "name": "water_body",
+          "data_type": "uint8",
+          "raster:sampling": "point",
+          "statistics": {
+            "minimum": 0.0,
+            "maximum": 1.0,
+            "mean": 0.079138888888889,
+            "stddev": 0.26995541327101,
+            "valid_percent": 100.0
+          }
+        }
+      ]
+    },
+    "metadata": {
+      "href": "./N82_W040.xml",
+      "title": "Product metadata (ISO 19115 XML)",
+      "roles": [
+        "metadata"
+      ],
+      "type": "application/xml",
+      "description": "The DGED product's XML metadata, copied unchanged from the source tile folder.",
+      "file:size": 44721,
+      "file:checksum": "1220d6a9e99ce65eff382314c401859a783e4cfccb7305218babd503749ea0b46e94"
+    }
+  },
+  "collection": "glo-30-2024-1"
+}

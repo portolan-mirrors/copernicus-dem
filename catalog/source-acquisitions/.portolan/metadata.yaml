@@ -1,0 +1,18 @@
+title: Copernicus DEM source acquisitions (TanDEM-X footprints)
+description: >-
+  Footprints of the TanDEM-X acquisitions behind each Copernicus DEM GLO-30
+  tile, collected from the SRC.kml file included with every tile. The Product
+  Handbook (issue 6.1, section 1.2.5.6) describes that file as "a vector file
+  (kml) containing the information of the data scenes used for DEM
+  processing", with "the acquisition ID, data scene number, data acquisition
+  date and time as well as information about the height of ambiguity of the
+  data scenes." One row per distinct footprint; a footprint that recurs in
+  several tiles' KML files is one row listing all of those tiles. Attribute
+  values are copied as the KML gives them.
+keywords:
+  - TanDEM-X
+  - InSAR
+  - acquisition footprints
+  - lineage
+  - Copernicus DEM
+  - GLO-30

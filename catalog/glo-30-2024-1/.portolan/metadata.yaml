@@ -1,0 +1,29 @@
+title: "Copernicus DEM GLO-30, release 2024_1"
+description: >-
+  The Copernicus DEM GLO-30 digital surface model, release 2024_1, as 26,475
+  items, one per 1° × 1° tile, at 1 arcsecond in latitude (about 30 m) with
+  longitude spacing that widens towards the poles. Heights are in metres
+  above the EGM2008 geoid (EPSG:3855) on WGS84 (EPSG:4326), RasterPixelIsPoint.
+  Each item has five cloud-optimized GeoTIFFs: the elevation model and the
+  height error, editing, filling and water body masks, plus the product XML.
+  Every raster was re-encoded losslessly and checked pixel for pixel against
+  its source. Tiles are trimmed by the last row and column they share with
+  their south and east neighbours, matching the AWS Open Data copy. There
+  are no tiles over open ocean. Read [AGENTS.md](AGENTS.md) for access
+  patterns.
+processing_notes: >-
+  26,248 tiles last changed in release 2019_2 or 2020_2 were read from the
+  AWS Open Data copy (s3://copernicus-dem-30m, 2021 release), which holds
+  those versions; the other 227 (188 changed in 2022_1, 38 in
+  2023_1 and 1 in 2024_1; 25 of the 2023_1 tiles are not on AWS at all) were read from the CDSE eodata archive. Each item's
+  copdem:pixel_source and copdem:release_changed record which. Built by
+  tools/bulk.py and tools/stac.py in the repository linked from the root
+  catalog.
+keywords:
+  - elevation
+  - digital surface model
+  - DEM
+  - TanDEM-X
+  - WorldDEM
+  - Copernicus
+  - EGM2008
