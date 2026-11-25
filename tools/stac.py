@@ -301,6 +301,11 @@ def make_collection(items: list[dict], now: str) -> dict:
                              "read the item COGs for heights. Web Mercator stops near 85 degrees, so most of "
                              "Antarctica is not in it. " + ATTRIBUTION_ADAPTED + "."),
             "proj:code": "EPSG:3857",
+            # Name the bands so a viewer composites RGB and masks by alpha;
+            # without them a render reads band 1 alone as a colormap.
+            "bands": [{"name": n, "data_type": "uint8", "description": d} for n, d in (
+                ("red", "Red, 0-255."), ("green", "Green, 0-255."), ("blue", "Blue, 0-255."),
+                ("alpha", "Coverage: 255 where a tile has data, 0 elsewhere."))],
             "start_datetime": starts[0], "end_datetime": ends[-1],
             "processing:lineage": "tools/overview.py: DEM COGs warped to EPSG:3857 (average), Horn hillshade "
                                   "(azimuth 315, altitude 45), hypsometric tint, 8-bit RGBA.",
@@ -348,7 +353,8 @@ def make_collection(items: list[dict], now: str) -> dict:
             "copdem:pixel_source": sorted({i["properties"]["copdem:pixel_source"] for i in items}),
         },
         "item_assets": item_assets(),
-        **({"renders": {"overview": {"title": "Hillshaded elevation", "assets": ["overview"]}}}
+        **({"renders": {"overview": {"title": "Hillshaded elevation", "assets": ["overview"],
+                                  "bidx": [1, 2, 3], "rescale": [[0, 255], [0, 255], [0, 255]]}}}
            if "overview" in keep_assets else {}),
         "assets": keep_assets,
         "links": links,

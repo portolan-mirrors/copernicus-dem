@@ -394,6 +394,25 @@
       "title": "Hillshaded elevation",
       "assets": [
         "overview"
+      ],
+      "bidx": [
+        1,
+        2,
+        3
+      ],
+      "rescale": [
+        [
+          0,
+          255
+        ],
+        [
+          0,
+          255
+        ],
+        [
+          0,
+          255
+        ]
       ]
     }
   },
@@ -430,6 +449,28 @@
       "title": "Global hillshaded elevation overview (COG)",
       "description": "The whole collection in one 8-bit RGB + alpha COG in Web Mercator at about 1.2 km, for maps that should not open 26,475 items. Elevation tinted with a hypsometric ramp and multiplied by a hillshade. Alpha is 0 where no tile has data. Not elevation data: read the item COGs for heights. Web Mercator stops near 85 degrees, so most of Antarctica is not in it. produced using Copernicus WorldDEM-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved.",
       "proj:code": "EPSG:3857",
+      "bands": [
+        {
+          "name": "red",
+          "data_type": "uint8",
+          "description": "Red, 0-255."
+        },
+        {
+          "name": "green",
+          "data_type": "uint8",
+          "description": "Green, 0-255."
+        },
+        {
+          "name": "blue",
+          "data_type": "uint8",
+          "description": "Blue, 0-255."
+        },
+        {
+          "name": "alpha",
+          "data_type": "uint8",
+          "description": "Coverage: 255 where a tile has data, 0 elsewhere."
+        }
+      ],
       "start_datetime": "2010-12-12T04:04:32Z",
       "end_datetime": "2020-11-12T00:11:22Z",
       "processing:lineage": "tools/overview.py: DEM COGs warped to EPSG:3857 (average), Horn hillshade (azimuth 315, altitude 45), hypsometric tint, 8-bit RGBA.",
@@ -159347,5 +159388,5 @@
       "title": "Collection agent guide"
     }
   ],
-  "updated": "2026-11-25T09:00:14Z"
+  "updated": "2026-11-25T09:06:17Z"
 }

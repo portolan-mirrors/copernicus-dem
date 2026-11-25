@@ -2,8 +2,8 @@
 """Repair what `portolan readme` (portolan-cli 0.9.0) writes, after it runs.
 
 - Root child links come out as `catalog/<id>/`; point them at `<id>/README.md`.
-- Collection READMEs link the licence as `./_assets/...`, which only resolves
-  from the root; from a collection it is `../_assets/...`.
+- READMEs link the licence as `./_assets/...`. That breaks on Source Coop's
+  product page and from a collection; link the public URL instead.
 - The glo-30-2024-1 Files table lists every tile file (six per item). Collapse
   them into one row per asset, with the count and total size summed exactly
   from the items' file:size.
@@ -17,6 +17,7 @@ from pathlib import Path
 
 CAT = Path(__file__).resolve().parent.parent / "catalog"
 PUBLIC = "https://data.source.coop/portolan-mirrors/copernicus-dem"
+VIEWER = "https://source.coop/portolan-mirrors/copernicus-dem"
 TILE_ROW = re.compile(r"^\| [NS]\d\d_[EW]\d{3}/[NS]\d\d_[EW]\d{3}(_[A-Z]{3}\.tif|\.xml) \| [^|]* \| [^|]* \|\n", re.M)
 
 
@@ -56,10 +57,17 @@ for readme in CAT.rglob("README.md"):
     text = text_orig
     for a, b in HEADINGS.items():
         text = re.sub(rf"^{re.escape(a)}$", b, text, flags=re.M)
+    # Source Coop renders the root README at .../copernicus-dem with no
+    # trailing slash, so a relative ./_assets/ link resolves one level too
+    # high there. Link the licence by its public URL instead.
+    text = re.sub(r"\]\(\.{1,2}/_assets/", f"]({PUBLIC}/_assets/", text)
     if rel == ".":
         fixed = re.sub(r"\]\(catalog/([^)/]+)/\)", r"](\1/README.md)", text)
+        # Same trap for every relative link on the product page: point them at
+        # Source Coop's file viewer.
+        fixed = re.sub(r"\]\((?![a-z]+:|#)([^)]+)\)", rf"]({VIEWER}/\1)", fixed)
     else:
-        fixed = text.replace("](./_assets/", "](../_assets/")
+        fixed = text
         # The quick start reads a data file by relative path, but data files
         # live only in the bucket; point it at the public URL.
         fixed = re.sub(r'read_parquet\("\./([^"/]+\.parquet)"\)',

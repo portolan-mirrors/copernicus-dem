@@ -21,7 +21,7 @@ from a source or measured from the data.
 
 The data is licensed under the Licence for the use of the Copernicus
 WorldDEM-30 (COP-DEM-GLO-30-F), pages 22 to 24 of
-[`_assets/copernicus-dem-licences.pdf`](_assets/copernicus-dem-licences.pdf).
+[`_assets/copernicus-dem-licences.pdf`](https://data.source.coop/portolan-mirrors/copernicus-dem/_assets/copernicus-dem-licences.pdf).
 Article 6 requires these notices. When you distribute the data:
 
 > © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved.

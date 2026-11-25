@@ -2,15 +2,15 @@
 
 ![elevation](https://img.shields.io/badge/elevation-blue) ![digital surface model](https://img.shields.io/badge/digital_surface_model-blue) ![DEM](https://img.shields.io/badge/DEM-blue) ![TanDEM-X](https://img.shields.io/badge/TanDEM--X-blue) ![WorldDEM](https://img.shields.io/badge/WorldDEM-blue) ![Copernicus](https://img.shields.io/badge/Copernicus-blue)
 
-A Portolan mirror of the Copernicus DEM GLO-30, release 2024_1: the global 30 m digital surface model from the TanDEM-X mission, produced by DLR and Airbus Defence and Space and provided under Copernicus by the European Union and ESA. It holds all 26,475 one-degree tiles, each with its elevation model and four quality layers (height error, editing, filling and water body masks), as cloud-optimized GeoTIFFs with embedded statistics, re-encoded losslessly so pixel values match the source exactly. Read [AGENTS.md](AGENTS.md) before you query.
+A Portolan mirror of the Copernicus DEM GLO-30, release 2024_1: the global 30 m digital surface model from the TanDEM-X mission, produced by DLR and Airbus Defence and Space and provided under Copernicus by the European Union and ESA. It holds all 26,475 one-degree tiles, each with its elevation model and four quality layers (height error, editing, filling and water body masks), as cloud-optimized GeoTIFFs with embedded statistics, re-encoded losslessly so pixel values match the source exactly. Read [AGENTS.md](https://source.coop/portolan-mirrors/copernicus-dem/AGENTS.md) before you query.
 
 ## Collections
 
-### [Copernicus DEM GLO-30, release 2024_1](glo-30-2024-1/README.md)
+### [Copernicus DEM GLO-30, release 2024_1](https://source.coop/portolan-mirrors/copernicus-dem/glo-30-2024-1/README.md)
 
 The Copernicus DEM GLO-30 digital surface model, release 2024_1, as 26,475 items, one per 1° × 1° tile, at 1 arcsecond in latitude (about 30 m) with longitude spacing that widens towards the poles....
 
-### [Copernicus DEM source acquisitions (TanDEM-X footprints)](source-acquisitions/README.md)
+### [Copernicus DEM source acquisitions (TanDEM-X footprints)](https://source.coop/portolan-mirrors/copernicus-dem/source-acquisitions/README.md)
 
 Footprints of the TanDEM-X acquisitions behind each Copernicus DEM GLO-30 tile, collected from the SRC.kml file included with every tile. The Product Handbook (issue 6.1, section 1.2.5.6) describes...
 
@@ -34,7 +34,7 @@ European Space Agency (2022). Copernicus DEM [Data set]. https://doi.org/10.5270
 
 ## License
 
-[other](./_assets/copernicus-dem-licences.pdf)
+[other](https://data.source.coop/portolan-mirrors/copernicus-dem/_assets/copernicus-dem-licences.pdf)
 
 ## Contact
 

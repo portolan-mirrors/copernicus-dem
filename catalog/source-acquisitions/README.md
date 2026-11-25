@@ -60,7 +60,7 @@ European Space Agency (2022). Copernicus DEM [Data set]. https://doi.org/10.5270
 
 ## License
 
-[other](../_assets/copernicus-dem-licences.pdf)
+[other](https://data.source.coop/portolan-mirrors/copernicus-dem/_assets/copernicus-dem-licences.pdf)
 
 ## Contact
 
