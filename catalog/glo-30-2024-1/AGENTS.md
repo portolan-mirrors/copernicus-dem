@@ -8,28 +8,63 @@ unless a query shows where they were measured.
 
 ## Assets
 
-| Asset | File | Type | Nodata | What a pixel is |
+| Asset | File | Type | Nodata | Pixel value |
 |---|---|---|---|---|
-| `dem` | `<id>_DEM.tif` | float32 | none | Height in metres above the EGM2008 geoid (EPSG:3855). A surface model: "including buildings, infrastructure and vegetation". |
+| `dem` | `<id>_DEM.tif` | float32 | none | Height in metres above the EGM2008 geoid (EPSG:3855), "including buildings, infrastructure and vegetation". |
 | `hem` | `<id>_HEM.tif` | float32 | -32767 | Height error: "the corresponding height error for each DEM pixel in the form of the standard deviation". -32767 marks edited pixels. |
 | `edm` | `<id>_EDM.tif` | uint8 | 0 | Editing Mask, handbook Table 6. |
 | `flm` | `<id>_FLM.tif` | uint8 | 0 | Filling Mask, handbook Table 7: which source filled an edited pixel. |
 | `wbm` | `<id>_WBM.tif` | uint8 | none | Water Body Mask, handbook Table 8. 0 is "No water", a value. |
-| `metadata` | `<id>.xml` | XML | | The producer's product metadata, unchanged. |
+| `metadata` | `<id>.xml` | XML | | Metadata from the producer, unchanged. |
 
 Mask values, from the handbook tables (also in each asset's
 `classification:classes`):
 
-- **EDM:** 0 Void (no data), 1 Not edited, 2 Infill of external elevation
-  data, 3 Interpolated pixels, 4 Smoothed pixels, 5 Airport editing, 6 Raised
-  negative elevation pixels, 7 Flattened pixels, 8 Ocean pixels, 9 Lake
-  pixels, 10 River pixels, 11 Shoreline pixels, 12 Morphed pixels (series of
-  pixels manually set), 13 Shifted pixels.
-- **FLM:** 0 Void (no data), 1 Edited (except filled pixels), 2 Not edited /
-  not filled, 3 ASTER, 4 SRTM90, 5 SRTM30, 6 GMTED2010, 7 SRTM30plus,
-  8 TerraSAR-X Radargrammetric DEM, 9 AW3D30, 100 Norway DEM, 101 DSM05 Spain,
-  102 Norway DEM v2.
-- **WBM:** 0 No water, 1 Ocean, 2 Lake, 3 River.
+**EDM** (handbook Table 6):
+
+| Value | Meaning |
+|---|---|
+| 0 | Void (no data) |
+| 1 | Not edited |
+| 2 | Infill of external elevation data |
+| 3 | Interpolated pixels |
+| 4 | Smoothed pixels |
+| 5 | Airport editing |
+| 6 | Raised negative elevation pixels |
+| 7 | Flattened pixels |
+| 8 | Ocean pixels |
+| 9 | Lake pixels |
+| 10 | River pixels |
+| 11 | Shoreline pixels |
+| 12 | Morphed pixels (series of pixels manually set) |
+| 13 | Shifted pixels |
+
+**FLM** (handbook Table 7):
+
+| Value | Meaning |
+|---|---|
+| 0 | Void (no data) |
+| 1 | Edited (except filled pixels) |
+| 2 | Not edited / not filled |
+| 3 | ASTER |
+| 4 | SRTM90 |
+| 5 | SRTM30 |
+| 6 | GMTED2010 |
+| 7 | SRTM30plus |
+| 8 | TerraSAR-X Radargrammetric DEM |
+| 9 | AW3D30 |
+| 100 | Norway DEM |
+| 101 | DSM05 Spain |
+| 102 | Norway DEM v2 |
+
+**WBM** (handbook Table 8):
+
+| Value | Meaning |
+|---|---|
+| 0 | No water |
+| 1 | Ocean |
+| 2 | Lake |
+| 3 | River |
 
 ## Recipes
 
@@ -63,7 +98,7 @@ done
 # 2
 ```
 
-The lake surface was flattened to one height (EDM 9, Lake pixels), so HEM has
+The lake was flattened to one height (EDM 9, Lake pixels), so HEM has
 no error estimate there (-32767), and the WBM says Lake (2).
 
 ## Per-item properties

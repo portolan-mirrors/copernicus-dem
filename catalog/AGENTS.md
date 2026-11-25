@@ -14,7 +14,7 @@ from a source or measured from the data.
 
 | Collection | What it is |
 |---|---|
-| [`glo-30-2024-1`](glo-30-2024-1/AGENTS.md) | One item per 1° x 1° tile: elevation (`dem`), Height Error Mask (`hem`), Editing Mask (`edm`), Filling Mask (`flm`), Water Body Mask (`wbm`), and the producer's XML. Plus `items.parquet` (every item as one table) and a global overview COG for display. |
+| [`glo-30-2024-1`](glo-30-2024-1/AGENTS.md) | One item per 1° x 1° tile with the elevation raster (`dem`), four quality masks (`hem`, `edm`, `flm`, `wbm`) and the producer's XML. Plus `items.parquet` (every item as one table) and a global overview COG for display. |
 | [`source-acquisitions`](source-acquisitions/AGENTS.md) | The TanDEM-X acquisition footprints each tile's `SRC.kml` lists, as GeoParquet and PMTiles. |
 
 ## Licence and required notices
@@ -40,7 +40,7 @@ mirror is not endorsed by ESA, the European Union, DLR or Airbus.
 
 ## Uses and limits
 
-- **A surface model, not bare earth.** "The Copernicus DEM is a Digital
+- **Includes buildings and trees.** "The Copernicus DEM is a Digital
   Surface Model (DSM) which represents the surface of the Earth including
   buildings, infrastructure and vegetation." Forest canopy and roofs are in
   the heights.
@@ -84,20 +84,20 @@ gdallocationinfo -valonly -wgs84 \
 # 4171.7265625
 ```
 
-Each COG carries its statistics (`gdalinfo -stats` reads them without
+Each COG stores its statistics (`gdalinfo -stats` reads them without
 scanning) and internal overviews. For a whole region, read the overview of a
 tile, or for display the collection overview `glo-30-2024-1_overview.tif`
 (EPSG:3857, about 1.2 km, RGBA, not heights).
 
 ## Join keys
 
-- The five rasters of one item share one grid, so pixel (row, col) is the
+- All rasters of one item share one grid, so pixel (row, col) is the
   same place in all of them.
 - `source-acquisitions.tiles` holds item ids of `glo-30-2024-1`.
 
 ## Quirks that produce silently wrong answers
 
-- **Heights are above the geoid, not the ellipsoid.** "The vertical reference
+- **Heights are relative to the EGM2008 geoid.** "The vertical reference
   datum is the Earth Gravitational Model 2008 (EGM2008; EPSG 3855)." GPS
   heights are ellipsoidal; convert before comparing.
 - **Pixels are points, and tiles are offset by half a pixel.** The rasters are
@@ -106,7 +106,7 @@ tile, or for display the collection overview `glo-30-2024-1_overview.tif`
   longitude." So the north-west pixel of `N01_E034` is centred on (34°E, 2°N),
   and its extent as GDAL reports it runs from 33.99986° to 34.99986° east and
   1.00014° to 2.00014° north. Tiles at 180°W reach up to 0.0014° west of
-  the antimeridian; their STAC `bbox` and geometry are clipped at -180°,
+  the antimeridian; their STAC `bbox` and geometry are clipped at 180°W,
   while `proj:transform` keeps the exact grid.
 - **3600, not 3601, pixels per row near the equator.** The producer's tiles
   have one extra row and column that repeat their neighbours' edge ("the
@@ -130,5 +130,5 @@ tile, or for display the collection overview `glo-30-2024-1_overview.tif`
 ## Structure
 
 Assets and structural links resolve relative to the object that carries them.
-The root `catalog.json` carries an absolute `self` link. Build scripts and
+The root `catalog.json` has an absolute `self` link. Build scripts and
 issue tracker: <https://github.com/portolan-mirrors/copernicus-dem>.

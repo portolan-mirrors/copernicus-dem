@@ -4,12 +4,12 @@ The Copernicus DEM GLO-30 digital surface model, release 2024_1, as 26,475 items
 
 ![elevation](https://img.shields.io/badge/elevation-blue) ![digital surface model](https://img.shields.io/badge/digital_surface_model-blue) ![DEM](https://img.shields.io/badge/DEM-blue) ![TanDEM-X](https://img.shields.io/badge/TanDEM--X-blue) ![WorldDEM](https://img.shields.io/badge/WorldDEM-blue) ![Copernicus](https://img.shields.io/badge/Copernicus-blue)
 
-## Spatial Coverage
+## Spatial coverage
 
 - **Bounding Box**: [-180.0, -89.999861111, 179.999861111, 84.000138889]
 - **CRS**: EPSG:4326
 
-## Temporal Coverage
+## Temporal coverage
 
 - **Start**: 2010-12-12T04:04:32Z
 - **End**: 2020-11-12T00:11:22Z
@@ -34,7 +34,7 @@ The Copernicus DEM GLO-30 digital surface model, release 2024_1, as 26,475 items
 | `<id>/<id>_WBM.tif` (26,475 files, asset `wbm`; checksums in each item) | 1.7 GB total | - |
 | `<id>/<id>.xml` (26,475 files, asset `metadata`; checksums in each item) | 1.2 GB total | - |
 
-## Quick Start
+## Quick start
 
 ```python
 import geopandas as gpd
@@ -43,12 +43,12 @@ gdf = gpd.read_parquet("https://data.source.coop/portolan-mirrors/copernicus-dem
 print(gdf.head())
 ```
 
-## STAC Metadata
+## STAC metadata
 
 - **root**: `../catalog.json`
 - **parent**: `../catalog.json`
 
-## Processing Notes
+## Processing notes
 
 26,248 tiles last changed in release 2019_2 or 2020_2 were read from the AWS Open Data copy (s3://copernicus-dem-30m, 2021 release), which holds those versions; the other 227 (188 changed in 2022_1, 38 in 2023_1 and 1 in 2024_1; 25 of the 2023_1 tiles are not on AWS at all) were read from the CDSE eodata archive. Each item's copdem:pixel_source and copdem:release_changed record which. Built by tools/bulk.py and tools/stac.py in the repository linked from the root catalog.
 

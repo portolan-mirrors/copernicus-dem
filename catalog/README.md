@@ -12,7 +12,7 @@ The Copernicus DEM GLO-30 digital surface model, release 2024_1, as 26,475 items
 
 ### [Copernicus DEM source acquisitions (TanDEM-X footprints)](source-acquisitions/README.md)
 
-Footprints of the TanDEM-X acquisitions behind each Copernicus DEM GLO-30 tile, collected from the SRC.kml file every tile ships with. The Product Handbook (issue 6.1, section 1.2.5.6) describes th...
+Footprints of the TanDEM-X acquisitions behind each Copernicus DEM GLO-30 tile, collected from the SRC.kml file included with every tile. The Product Handbook (issue 6.1, section 1.2.5.6) describes...
 
 ## Coverage
 

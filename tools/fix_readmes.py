@@ -43,9 +43,19 @@ def collapse(text: str, coll: Path) -> str:
     return text[:first] + rows + text[first:]
 
 
+# portolan readme writes Title Case headings; the org prose rules want
+# sentence case (portolan-ops norms/prose.md, Portolan-Mechanics.Headings).
+HEADINGS = {"## Processing Notes": "## Processing notes", "## Quick Start": "## Quick start",
+            "## STAC Metadata": "## STAC metadata", "## Spatial Coverage": "## Spatial coverage",
+            "## Temporal Coverage": "## Temporal coverage"}
+
+
 for readme in CAT.rglob("README.md"):
     rel = readme.parent.relative_to(CAT).as_posix()
-    text = readme.read_text()
+    text_orig = readme.read_text()
+    text = text_orig
+    for a, b in HEADINGS.items():
+        text = re.sub(rf"^{re.escape(a)}$", b, text, flags=re.M)
     if rel == ".":
         fixed = re.sub(r"\]\(catalog/([^)/]+)/\)", r"](\1/README.md)", text)
     else:
@@ -56,6 +66,6 @@ for readme in CAT.rglob("README.md"):
                        lambda m: f'read_parquet("{PUBLIC}/{rel}/{m.group(1)}")', fixed)
         if (readme.parent / "collection.json").exists() and any(readme.parent.glob("*/*.json")):
             fixed = collapse(fixed, readme.parent)
-    if fixed != text:
+    if fixed != text_orig:
         readme.write_text(fixed)
-        print("fixed", readme.relative_to(CAT), f"({len(text.splitlines())} -> {len(fixed.splitlines())} lines)")
+        print("fixed", readme.relative_to(CAT), f"({len(text_orig.splitlines())} -> {len(fixed.splitlines())} lines)")

@@ -1,14 +1,14 @@
 # Copernicus DEM source acquisitions (TanDEM-X footprints)
 
-Footprints of the TanDEM-X acquisitions behind each Copernicus DEM GLO-30 tile, collected from the SRC.kml file every tile ships with. The Product Handbook (issue 6.1, section 1.2.5.6) describes that file as "a vector file (kml) containing the information of the data scenes used for DEM processing", with "the acquisition ID, data scene number, data acquisition date and time as well as information about the height of ambiguity of the data scenes." One row per distinct footprint; a footprint that recurs in several tiles' KML files is one row listing all of those tiles. Attribute values are copied as the KML gives them.
+Footprints of the TanDEM-X acquisitions behind each Copernicus DEM GLO-30 tile, collected from the SRC.kml file included with every tile. The Product Handbook (issue 6.1, section 1.2.5.6) describes that file as "a vector file (kml) containing the information of the data scenes used for DEM processing", with "the acquisition ID, data scene number, data acquisition date and time as well as information about the height of ambiguity of the data scenes." One row per distinct footprint; a footprint that recurs in several tiles' KML files is one row listing all of those tiles. Attribute values are copied as the KML gives them.
 
 ![TanDEM-X](https://img.shields.io/badge/TanDEM--X-blue) ![InSAR](https://img.shields.io/badge/InSAR-blue) ![acquisition footprints](https://img.shields.io/badge/acquisition_footprints-blue) ![lineage](https://img.shields.io/badge/lineage-blue) ![Copernicus DEM](https://img.shields.io/badge/Copernicus_DEM-blue) ![GLO-30](https://img.shields.io/badge/GLO--30-blue)
 
-## Spatial Coverage
+## Spatial coverage
 
 - **Bounding Box**: [-179.999649, -89.933632, 179.999634, 84.20343]
 
-## Temporal Coverage
+## Temporal coverage
 
 - **Start**: 2010-12-12T04:04:00Z
 - **End**: 2017-02-28T23:22:00Z
@@ -17,8 +17,8 @@ Footprints of the TanDEM-X acquisitions behind each Copernicus DEM GLO-30 tile, 
 
 | Column | Type | Description |
 |--------|------|-------------|
-| name | string | The placemark name from SRC.kml, such as 1020979_02. The handbook says the file holds "the acquisition ID, data scene number"; it does not define how the name encodes them. |
-| acquisition_set | string | "Acquisition Set" from the KML balloon: First, Second, First crossing, Second crossing, First desert, Second desert, Additional or Other acquisition. The handbook does not define these sets. |
+| name | string | The placemark name from SRC.kml, such as 1020979_02. The handbook says the file contains "the acquisition ID, data scene number"; it does not define how the name encodes them. |
+| acquisition_set | string | "Acquisition Set" from the KML balloon: First, Second, First crossing, Second crossing, First desert, Second desert, Additional or Other acquisition, none of which the handbook defines. |
 | acquisition_time | timestamp | "Acquisition Date" from the KML balloon, to the minute. The KML gives no time zone. |
 | phase_unwrap | string | "Phase Unwrap" from the KML balloon: multi-baseline or single-baseline. |
 | height_of_ambiguity | number | "Height of Ambiguity" from the KML balloon, as written. The KML gives no unit. |
@@ -36,7 +36,7 @@ Footprints of the TanDEM-X acquisitions behind each Copernicus DEM GLO-30 tile, 
 | ./styles/default.json | 2.2 KB | 12204c7fe525... |
 | ./thumbnail.png | 1.2 MB | 12201c7b7b31... |
 
-## Quick Start
+## Quick start
 
 ```python
 import geopandas as gpd
@@ -45,7 +45,7 @@ gdf = gpd.read_parquet("https://data.source.coop/portolan-mirrors/copernicus-dem
 print(gdf.head())
 ```
 
-## STAC Metadata
+## STAC metadata
 
 - **root**: `../catalog.json`
 - **parent**: `../catalog.json`

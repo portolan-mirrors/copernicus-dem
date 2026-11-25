@@ -361,11 +361,11 @@ def make_collection(items: list[dict], now: str) -> dict:
 # tools/acquisitions.py does.
 ACQ_COLUMNS = [
     {"name": "name", "type": "string",
-     "description": "The placemark name from SRC.kml, such as 1020979_02. The handbook says the file holds "
+     "description": "The placemark name from SRC.kml, such as 1020979_02. The handbook says the file contains "
                     "\"the acquisition ID, data scene number\"; it does not define how the name encodes them."},
     {"name": "acquisition_set", "type": "string",
      "description": "\"Acquisition Set\" from the KML balloon: First, Second, First crossing, Second crossing, First desert, Second desert, "
-                    "Additional or Other acquisition. The handbook does not define these sets."},
+                    "Additional or Other acquisition, none of which the handbook defines."},
     {"name": "acquisition_time", "type": "timestamp",
      "description": "\"Acquisition Date\" from the KML balloon, to the minute. The KML gives no time zone."},
     {"name": "phase_unwrap", "type": "string",

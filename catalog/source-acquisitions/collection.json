@@ -9,7 +9,7 @@
     "https://schemas.portolan-sdi.org/portolan/v0.3.0/schema.json"
   ],
   "title": "Copernicus DEM source acquisitions (TanDEM-X footprints)",
-  "description": "Footprints of the TanDEM-X acquisitions behind each Copernicus DEM GLO-30 tile, collected from the SRC.kml file every tile ships with. The Product Handbook (issue 6.1, section 1.2.5.6) describes that file as \"a vector file (kml) containing the information of the data scenes used for DEM processing\", with \"the acquisition ID, data scene number, data acquisition date and time as well as information about the height of ambiguity of the data scenes.\" One row per distinct footprint; a footprint that recurs in several tiles' KML files is one row listing all of those tiles. Attribute values are copied as the KML gives them.",
+  "description": "Footprints of the TanDEM-X acquisitions behind each Copernicus DEM GLO-30 tile, collected from the SRC.kml file included with every tile. The Product Handbook (issue 6.1, section 1.2.5.6) describes that file as \"a vector file (kml) containing the information of the data scenes used for DEM processing\", with \"the acquisition ID, data scene number, data acquisition date and time as well as information about the height of ambiguity of the data scenes.\" One row per distinct footprint; a footprint that recurs in several tiles' KML files is one row listing all of those tiles. Attribute values are copied as the KML gives them.",
   "keywords": [
     "TanDEM-X",
     "InSAR",
@@ -78,12 +78,12 @@
     {
       "name": "name",
       "type": "string",
-      "description": "The placemark name from SRC.kml, such as 1020979_02. The handbook says the file holds \"the acquisition ID, data scene number\"; it does not define how the name encodes them."
+      "description": "The placemark name from SRC.kml, such as 1020979_02. The handbook says the file contains \"the acquisition ID, data scene number\"; it does not define how the name encodes them."
     },
     {
       "name": "acquisition_set",
       "type": "string",
-      "description": "\"Acquisition Set\" from the KML balloon: First, Second, First crossing, Second crossing, First desert, Second desert, Additional or Other acquisition. The handbook does not define these sets."
+      "description": "\"Acquisition Set\" from the KML balloon: First, Second, First crossing, Second crossing, First desert, Second desert, Additional or Other acquisition, none of which the handbook defines."
     },
     {
       "name": "acquisition_time",
@@ -232,5 +232,5 @@
       "title": "Collection agent guide"
     }
   ],
-  "updated": "2026-11-25T08:04:04Z"
+  "updated": "2026-11-25T09:00:14Z"
 }

@@ -11,7 +11,7 @@ thumbnails, the licence. Everything in it publishes, nothing outside it does.
 The data (about 1.3 TB of COGs, plus the overview and the footprint files)
 lives only in the bucket.
 
-## Where the pixels come from
+## Pixel sources
 
 The 2024_1 release has 26,475 tiles. Each tile's `eopIdentifier` ends with the
 release in which it last changed. The 26,248 tiles last changed in 2019_2 or
