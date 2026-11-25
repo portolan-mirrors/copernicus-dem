@@ -6,19 +6,19 @@ Footprints of the TanDEM-X acquisitions behind each Copernicus DEM GLO-30 tile, 
 
 ## Spatial Coverage
 
-- **Bounding Box**: [-176.8396, -0.56468, 174.189896, 5.555785]
+- **Bounding Box**: [-179.999649, -89.933632, 179.999634, 84.20343]
 
 ## Temporal Coverage
 
 - **Start**: 2010-12-12T04:04:00Z
-- **End**: 2014-11-30T16:48:00Z
+- **End**: 2017-02-28T23:22:00Z
 
 ## Schema
 
 | Column | Type | Description |
 |--------|------|-------------|
 | name | string | The placemark name from SRC.kml, such as 1020979_02. The handbook says the file holds "the acquisition ID, data scene number"; it does not define how the name encodes them. |
-| acquisition_set | string | "Acquisition Set" from the KML balloon: First, Second, First crossing, Second crossing, Additional or Other acquisition. The handbook does not define these sets. |
+| acquisition_set | string | "Acquisition Set" from the KML balloon: First, Second, First crossing, Second crossing, First desert, Second desert, Additional or Other acquisition. The handbook does not define these sets. |
 | acquisition_time | timestamp | "Acquisition Date" from the KML balloon, to the minute. The KML gives no time zone. |
 | phase_unwrap | string | "Phase Unwrap" from the KML balloon: multi-baseline or single-baseline. |
 | height_of_ambiguity | number | "Height of Ambiguity" from the KML balloon, as written. The KML gives no unit. |
@@ -31,10 +31,10 @@ Footprints of the TanDEM-X acquisitions behind each Copernicus DEM GLO-30 tile, 
 
 | File | Size | Checksum |
 |------|------|----------|
-| ./source-acquisitions.parquet | 1.2 MB | 1220f3896f4f... |
-| ./source-acquisitions.pmtiles | 9.2 MB | 1220612b17e6... |
-| ./styles/default.json | 1.7 KB | 122051e7e6e0... |
-| ./thumbnail.png | 925.6 KB | 1220c42c6fb2... |
+| ./source-acquisitions.parquet | 33.7 MB | 1220ae9a9404... |
+| ./source-acquisitions.pmtiles | 651.4 MB | 12207cedc8f4... |
+| ./styles/default.json | 2.2 KB | 12204c7fe525... |
+| ./thumbnail.png | 1.2 MB | 12201c7b7b31... |
 
 ## Quick Start
 

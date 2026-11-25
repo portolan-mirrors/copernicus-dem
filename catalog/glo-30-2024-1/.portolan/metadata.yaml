@@ -14,8 +14,8 @@ description: >-
 processing_notes: >-
   26,248 tiles last changed in release 2019_2 or 2020_2 were read from the
   AWS Open Data copy (s3://copernicus-dem-30m, 2021 release), which holds
-  those versions; the other 227 (25 absent from AWS, 202 changed in 2022_1,
-  2023_1 or 2024_1) were read from the CDSE eodata archive. Each item's
+  those versions; the other 227 (188 changed in 2022_1, 38 in
+  2023_1 and 1 in 2024_1; 25 of the 2023_1 tiles are not on AWS at all) were read from the CDSE eodata archive. Each item's
   copdem:pixel_source and copdem:release_changed record which. Built by
   tools/bulk.py and tools/stac.py in the repository linked from the root
   catalog.

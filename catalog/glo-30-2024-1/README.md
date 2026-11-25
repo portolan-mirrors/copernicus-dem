@@ -6,13 +6,13 @@ The Copernicus DEM GLO-30 digital surface model, release 2024_1, as 26,475 items
 
 ## Spatial Coverage
 
-- **Bounding Box**: [-177.000138889, 0.000138889, 173.999861111, 5.000138889]
+- **Bounding Box**: [-180.0, -89.999861111, 179.999861111, 84.000138889]
 - **CRS**: EPSG:4326
 
 ## Temporal Coverage
 
 - **Start**: 2010-12-12T04:04:32Z
-- **End**: 2014-11-30T16:48:15Z
+- **End**: 2020-11-12T00:11:22Z
 
 ## Bands
 
@@ -24,15 +24,15 @@ The Copernicus DEM GLO-30 digital surface model, release 2024_1, as 26,475 items
 
 | File | Size | Checksum |
 |------|------|----------|
-| ./items.parquet | 407.9 KB | 1220a7835ab0... |
-| ./thumbnail.png | 401.5 KB | 122017fa378a... |
-| ./glo-30-2024-1_overview.tif | 4.2 MB | 12207842ce17... |
-| `<id>/<id>_DEM.tif` (400 files, asset `dem`; checksums in each item) | 13.3 GB total | - |
-| `<id>/<id>_HEM.tif` (400 files, asset `hem`; checksums in each item) | 15.0 GB total | - |
-| `<id>/<id>_EDM.tif` (400 files, asset `edm`; checksums in each item) | 0.2 GB total | - |
-| `<id>/<id>_FLM.tif` (400 files, asset `flm`; checksums in each item) | 0.2 GB total | - |
-| `<id>/<id>_WBM.tif` (400 files, asset `wbm`; checksums in each item) | 0.0 GB total | - |
-| `<id>/<id>.xml` (400 files, asset `metadata`; checksums in each item) | 0.0 GB total | - |
+| ./items.parquet | 20.1 MB | 1220639d5bf1... |
+| ./thumbnail.png | 682.7 KB | 1220cb4e8366... |
+| ./glo-30-2024-1_overview.tif | 429.2 MB | 12203d37a5ae... |
+| `<id>/<id>_DEM.tif` (26,475 files, asset `dem`; checksums in each item) | 587.4 GB total | - |
+| `<id>/<id>_HEM.tif` (26,475 files, asset `hem`; checksums in each item) | 713.4 GB total | - |
+| `<id>/<id>_EDM.tif` (26,475 files, asset `edm`; checksums in each item) | 5.3 GB total | - |
+| `<id>/<id>_FLM.tif` (26,475 files, asset `flm`; checksums in each item) | 5.2 GB total | - |
+| `<id>/<id>_WBM.tif` (26,475 files, asset `wbm`; checksums in each item) | 1.7 GB total | - |
+| `<id>/<id>.xml` (26,475 files, asset `metadata`; checksums in each item) | 1.2 GB total | - |
 
 ## Quick Start
 
@@ -50,7 +50,7 @@ print(gdf.head())
 
 ## Processing Notes
 
-26,248 tiles last changed in release 2019_2 or 2020_2 were read from the AWS Open Data copy (s3://copernicus-dem-30m, 2021 release), which holds those versions; the other 227 (25 absent from AWS, 202 changed in 2022_1, 2023_1 or 2024_1) were read from the CDSE eodata archive. Each item's copdem:pixel_source and copdem:release_changed record which. Built by tools/bulk.py and tools/stac.py in the repository linked from the root catalog.
+26,248 tiles last changed in release 2019_2 or 2020_2 were read from the AWS Open Data copy (s3://copernicus-dem-30m, 2021 release), which holds those versions; the other 227 (188 changed in 2022_1, 38 in 2023_1 and 1 in 2024_1; 25 of the 2023_1 tiles are not on AWS at all) were read from the CDSE eodata archive. Each item's copdem:pixel_source and copdem:release_changed record which. Built by tools/bulk.py and tools/stac.py in the repository linked from the root catalog.
 
 ## Citation
 

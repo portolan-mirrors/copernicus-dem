@@ -147,7 +147,11 @@ def stac_transform(gt: list[float]) -> list[float]:
 def bbox_of(shape: list[int], gt: list[float]) -> list[float]:
     h, w = shape
     x0, y0 = gt[0], gt[3]
-    return [round(x0, 9), round(y0 + h * gt[5], 9), round(x0 + w * gt[1], 9), round(y0, 9)]
+    # Pixel centres sit on whole degrees (RasterPixelIsPoint), so W180 tiles
+    # reach half a pixel past the antimeridian (to -180.0014 at 10"). STAC
+    # bboxes must stay within +-180; clamp the footprint, not proj:transform.
+    return [max(round(x0, 9), -180.0), max(round(y0 + h * gt[5], 9), -90.0),
+            min(round(x0 + w * gt[1], 9), 180.0), min(round(y0, 9), 90.0)]
 
 
 def band(asset: str, info: dict) -> dict:
@@ -184,7 +188,10 @@ def make_item(row: dict, res: dict) -> dict:
     dem = res["assets"]["dem"]
     shape, gt = dem["proj:shape"], dem["proj:transform"]
     for k in ASSETS:  # every raster shares the DEM grid
-        if res["assets"][k]["proj:shape"] != shape or res["assets"][k]["proj:transform"] != gt:
+        # 358 source HEMs carry float noise in the geotransform (at most
+        # 2.8e-14 deg, about 3 nm), kept byte-exact; tolerate it, not more.
+        t = res["assets"][k]["proj:transform"]
+        if res["assets"][k]["proj:shape"] != shape or any(abs(a - b) > 1e-9 for a, b in zip(t, gt)):
             raise SystemExit(f"{iid}: {k} grid differs from dem")
     bb = bbox_of(shape, gt)
     src = row["source"]
@@ -357,7 +364,7 @@ ACQ_COLUMNS = [
      "description": "The placemark name from SRC.kml, such as 1020979_02. The handbook says the file holds "
                     "\"the acquisition ID, data scene number\"; it does not define how the name encodes them."},
     {"name": "acquisition_set", "type": "string",
-     "description": "\"Acquisition Set\" from the KML balloon: First, Second, First crossing, Second crossing, "
+     "description": "\"Acquisition Set\" from the KML balloon: First, Second, First crossing, Second crossing, First desert, Second desert, "
                     "Additional or Other acquisition. The handbook does not define these sets."},
     {"name": "acquisition_time", "type": "timestamp",
      "description": "\"Acquisition Date\" from the KML balloon, to the minute. The KML gives no time zone."},

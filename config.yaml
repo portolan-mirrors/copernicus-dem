@@ -55,6 +55,6 @@ toolchain:
 # the full run; the test subset covers only a band near the equator.
 thumbnails:
   skill_dir: ~/.claude/plugins/cache/portolan-skills/portolan/0.5.0/skills/portolan-thumbnails
-  dem_center: [37.0, 1.5]
+  dem_center: [35.0, 2.0]
   acq_center: [37.3, 0.3]
   acq_zoom: 8

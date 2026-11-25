@@ -105,7 +105,9 @@ tile, or for display the collection overview `glo-30-2024-1_overview.tif`
   pixels of a DEM tile always refer to integer values in latitude and
   longitude." So the north-west pixel of `N01_E034` is centred on (34°E, 2°N),
   and its extent as GDAL reports it runs from 33.99986° to 34.99986° east and
-  1.00014° to 2.00014° north.
+  1.00014° to 2.00014° north. Tiles at 180°W reach up to 0.0014° west of
+  the antimeridian; their STAC `bbox` and geometry are clipped at -180°,
+  while `proj:transform` keeps the exact grid.
 - **3600, not 3601, pixels per row near the equator.** The producer's tiles
   have one extra row and column that repeat their neighbours' edge ("the
   number of grid posts per geocell is equal to the number of intervals per

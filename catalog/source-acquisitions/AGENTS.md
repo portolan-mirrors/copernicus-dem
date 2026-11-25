@@ -25,7 +25,7 @@ these fields. Everything below that is not quoted was measured from the table.
 | Column | Type | Meaning |
 |---|---|---|
 | `name` | string | Placemark name from the KML, such as `1020979_02`. Not unique (see below). |
-| `acquisition_set` | string | "Acquisition Set" from the KML: `First acquisition`, `Second acquisition`, `First crossing acquisition`, `Second crossing acquisition`, `Additional acquisition`, `Other acquisition`. Not defined in the handbook. |
+| `acquisition_set` | string | "Acquisition Set" from the KML: `First acquisition`, `Second acquisition`, `First crossing acquisition`, `Second crossing acquisition`, `First desert acquisition`, `Second desert acquisition`, `Additional acquisition`, `Other acquisition`. Not defined in the handbook. |
 | `acquisition_time` | timestamp | "Acquisition Date", to the minute. No time zone given in the KML. |
 | `phase_unwrap` | string | "Phase Unwrap": `multi-baseline` or `single-baseline`. |
 | `height_of_ambiguity` | double | "Height of Ambiguity" as written. No unit given in the KML. |

@@ -18,11 +18,11 @@ Footprints of the TanDEM-X acquisitions behind each Copernicus DEM GLO-30 tile, 
 
 **Spatial Extent**
 
-- West: -177.0001, South: -0.5647, East: 174.1899, North: 5.5558
+- West: -180.0000, South: -89.9999, East: 179.9999, North: 84.2034
 
 **Temporal Extent**
 
-- 2010-12-12 to 2014-11-30
+- 2010-12-12 to 2020-11-12
 
 ## Citation
 

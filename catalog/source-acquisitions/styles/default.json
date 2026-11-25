@@ -10,7 +10,7 @@
       "url": "pmtiles://../source-acquisitions.pmtiles",
       "minzoom": 0,
       "maxzoom": 10,
-      "attribution": "produced using Copernicus WorldDEM-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved"
+      "attribution": "produced using Copernicus WorldDEM-30 \u00a9 DLR e.V. 2010-2014 and \u00a9 Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved"
     }
   },
   "layers": [
@@ -21,9 +21,23 @@
       "source-layer": "source-acquisitions",
       "paint": {
         "fill-color": [
-          "match", ["get", "acquisition_set"],
-          ["First acquisition", "First crossing acquisition"], "#ff0000",
-          ["Second acquisition", "Second crossing acquisition"], "#247fff",
+          "match",
+          [
+            "get",
+            "acquisition_set"
+          ],
+          [
+            "First acquisition",
+            "First crossing acquisition",
+            "First desert acquisition"
+          ],
+          "#ff0000",
+          [
+            "Second acquisition",
+            "Second crossing acquisition",
+            "Second desert acquisition"
+          ],
+          "#247fff",
           "#00ee00"
         ],
         "fill-opacity": 0.06
@@ -36,12 +50,40 @@
       "source-layer": "source-acquisitions",
       "paint": {
         "line-color": [
-          "match", ["get", "acquisition_set"],
-          ["First acquisition", "First crossing acquisition"], "#ff0000",
-          ["Second acquisition", "Second crossing acquisition"], "#247fff",
+          "match",
+          [
+            "get",
+            "acquisition_set"
+          ],
+          [
+            "First acquisition",
+            "First crossing acquisition",
+            "First desert acquisition"
+          ],
+          "#ff0000",
+          [
+            "Second acquisition",
+            "Second crossing acquisition",
+            "Second desert acquisition"
+          ],
+          "#247fff",
           "#00ee00"
         ],
-        "line-width": ["interpolate", ["linear"], ["zoom"], 0, 0.3, 6, 1, 10, 2],
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          0,
+          0.3,
+          6,
+          1,
+          10,
+          2
+        ],
         "line-opacity": 0.8
       }
     }
